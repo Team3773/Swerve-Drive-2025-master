@@ -74,7 +74,7 @@ public class SwerveJoystickCmd extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        swerveSubsystem.stopModules();
+        // swerveSubsystem.stopModules();
     }
 
     @Override

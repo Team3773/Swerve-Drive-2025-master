@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,6 +34,8 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our
         // autonomous chooser on the dashboard.
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
         m_robotContainer = new RobotContainer();
     }
 
@@ -73,12 +77,16 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+
+        RobotShared m_robotShared = RobotShared.getInstance();
+
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-        // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
+
+        m_robotShared.getDriveSubsystem().setAutoRotationOffset(0.0, false);
     }
 
     /** This function is called periodically during autonomous. */
@@ -95,6 +103,9 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        RobotShared m_robotShared = RobotShared.getInstance();
+
+        m_robotShared.getDriveSubsystem().setAutoRotationOffset(0.0, true); // null so it pulls from shuffleboard
     }
 
     /** This function is called periodically during operator control. */
