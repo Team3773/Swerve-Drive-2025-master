@@ -24,13 +24,14 @@ public final class Constants {
         // This changes the drive speed of the module (a pinion gear with more teeth
         // will result in a
         // robot that drives faster).
-        public static final int kDrivingMotorPinionTeeth = 16;
+        public static final int kDrivingMotorPinionTeeth = 14;
         // 45 teeth on the wheel's bevel gear, 16 teeth on the first-stage spur gear, 19
         // teeth on the bevel pinion
         public static final double kDrivingMotorReduction = (45.0 * 19.0) / (kDrivingMotorPinionTeeth * 15);
         // Invert the turning encoder, since the output shaft rotates in the opposite
         // direction of
         // the steering motor in the MAXSwerve Module.
+        //
         public static final boolean kTurningEncoderInverted = true;
 
         // Calculations required for driving motor conversion factors and feed forward
