@@ -1,76 +1,210 @@
 package frc.robot;
 
 
+import java.io.File;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.Board.DriverTab;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class RobotContainer {
 
-        private SwerveSubsystem swerveSubsystem;
-        
-        CommandXboxController m_driverController;
-        private RobotShared m_robotShared = RobotShared.getInstance();
 
-        SendableChooser<Command> autoChooser;
+public class RobotContainer
+{
 
-        public RobotContainer() {
-                initSubsystems();
-                initInputDevices();
-                NamedCommands.registerCommand("ResetGyro", new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  final CommandXboxController driverXbox = new CommandXboxController(OIConstants.kDriverControllerPort);
+  // The robot's subsystems and commands are defined here...
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+                                                                         "swerve"));
+  // Applies deadbands and inverts controls because joysticks
+  // are back-right positive while robot
+  // controls are front-left positive
+  // left stick controls translation
+  // right stick controls the rotational velocity 
+  // buttons are quick rotation positions to different ways to face
+  // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
+  AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
+                                                                 () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
+                                                                                               OperatorConstants.LEFT_Y_DEADBAND),
+                                                                 () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
+                                                                                               OperatorConstants.LEFT_X_DEADBAND),
+                                                                 () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
+                                                                                               OperatorConstants.RIGHT_X_DEADBAND),
+                                                                 driverXbox.getHID()::getYButtonPressed,
+                                                                 driverXbox.getHID()::getAButtonPressed,
+                                                                 driverXbox.getHID()::getXButtonPressed,
+                                                                 driverXbox.getHID()::getBButtonPressed);
 
-                autoChooser = AutoBuilder.buildAutoChooser();
-                SmartDashboard.putData("Auto Mode", autoChooser);
+  // Applies deadbands and inverts controls because joysticks
+  // are back-right positive while robot
+  // controls are front-left positive
+  // left stick controls translation
+  // right stick controls the desired angle NOT angular rotation
+  Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+      () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+      () -> driverXbox.getRightX(),
+      () -> driverXbox.getRightY());
 
-                configureButtonBindings();
-        }
+  // Applies deadbands and inverts controls because joysticks
+  // are back-right positive while robot
+  // controls are front-left positive
+  // left stick controls translation
+  // right stick controls the angular velocity of the robot
+  Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+      () -> MathUtil.applyDeadband(driverXbox.getLeftY() * -1, OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(driverXbox.getLeftX() * -1, OperatorConstants.LEFT_X_DEADBAND),
+      () -> driverXbox.getRightX() * -1);
 
-        private void initSubsystems() {
-                m_robotShared = RobotShared.getInstance();
+  Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
+      () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+      () -> driverXbox.getRawAxis(2));
 
-                swerveSubsystem = m_robotShared.getDriveSubsystem();
-                // m_robotShared.getPhotonVision();
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
+  public RobotContainer()
+  {
+    // Configure the trigger bindings
+    configureBindings();
+  }
 
-                DriverTab.getInstance();
-        }
-        private void initInputDevices(){
-                m_driverController = m_robotShared.getDriverController();
-        }
+  /**
+   * Use this method to define your trigger->command mappings. Triggers can be created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
+   * named factories in {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+   * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+   */
+  private void configureBindings()
+  {
+    if (DriverStation.isTest())
+    {
+      driverXbox.b().whileTrue(drivebase.sysIdDriveMotorCommand());
+      driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
+      driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.back().whileTrue(drivebase.centerModulesCommand());
+      driverXbox.leftBumper().onTrue(Commands.none());
+      driverXbox.rightBumper().onTrue(Commands.none());
+      drivebase.setDefaultCommand(
+          !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
+    } else
+    {
+      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+      driverXbox.b().whileTrue(
+          Commands.deferredProxy(() -> drivebase.driveToPose(
+                                     new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
+                                ));
+      driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2));
+      driverXbox.start().whileTrue(Commands.none());
+      driverXbox.back().whileTrue(Commands.none());
+      driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverXbox.rightBumper().onTrue(Commands.none());
+      drivebase.setDefaultCommand(
+          !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+    }
+  }
 
-        private void configureButtonBindings() {
-                m_driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand()
+  {
+    // An example command will be run in autonomous
+    return drivebase.getAutonomousCommand("New Auto");
+  }
 
-                m_driverController.leftStick()
-                                .whileTrue(new RunCommand(
-                                                () -> swerveSubsystem.drive(
-                                                                -MathUtil.applyDeadband(m_driverController.getLeftY(),
-                                                                                OIConstants.kDeadband) / 2,
-                                                                -MathUtil.applyDeadband(m_driverController.getLeftX(),
-                                                                                OIConstants.kDeadband) / 2,
-                                                                -MathUtil.applyDeadband(m_driverController.getRightX(),
-                                                                                OIConstants.kDeadband) / 2,
-                                                                true, true, OIConstants.kUseQuadraticInput),
-                                                swerveSubsystem));
+  public void setDriveMode()
+  {
+    configureBindings();
+  }
 
-                m_driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.setForwardFormation()));
-                m_driverController.x().onTrue(new InstantCommand(() -> swerveSubsystem.setXFormation()));
-        }
-
-        public Command getAutonomousCommand() {
-                return autoChooser.getSelected();
-        }
+  public void setMotorBrake(boolean brake)
+  {
+    drivebase.setMotorBrake(brake);
+  }
 }
+
+// public class RobotContainer {
+
+//         private SwerveSubsystem swerveSubsystem;
+        
+//         CommandXboxController m_driverController;
+//         private RobotShared m_robotShared = RobotShared.getInstance();
+
+//         SendableChooser<Command> autoChooser;
+
+//         public RobotContainer() {
+//                 initSubsystems();
+//                 initInputDevices();
+//                 NamedCommands.registerCommand("ResetGyro", new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+
+//                 autoChooser = AutoBuilder.buildAutoChooser();
+//                 SmartDashboard.putData("Auto Mode", autoChooser);
+
+//                 configureButtonBindings();
+//         }
+
+//         private void initSubsystems() {
+//                 m_robotShared = RobotShared.getInstance();
+
+//                 swerveSubsystem = m_robotShared.getDriveSubsystem();
+//                 // m_robotShared.getPhotonVision();
+
+//                 DriverTab.getInstance();
+//         }
+//         private void initInputDevices(){
+//                 m_driverController = m_robotShared.getDriverController();
+//         }
+
+//         private void configureButtonBindings() {
+//                 m_driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+
+//                 m_driverController.leftStick()
+//                                 .whileTrue(new RunCommand(
+//                                                 () -> swerveSubsystem.drive(
+//                                                                 -MathUtil.applyDeadband(m_driverController.getLeftY(),
+//                                                                                 OIConstants.kDeadband) / 2,
+//                                                                 -MathUtil.applyDeadband(m_driverController.getLeftX(),
+//                                                                                 OIConstants.kDeadband) / 2,
+//                                                                 -MathUtil.applyDeadband(m_driverController.getRightX(),
+//                                                                                 OIConstants.kDeadband) / 2,
+//                                                                 true, true, OIConstants.kUseQuadraticInput),
+//                                                 swerveSubsystem));
+
+//                 m_driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.setForwardFormation()));
+//                 m_driverController.x().onTrue(new InstantCommand(() -> swerveSubsystem.setXFormation()));
+//         }
+
+//         public Command getAutonomousCommand() {
+//                 return autoChooser.getSelected();
+//         }
+// }
 
 // public Command getAutonomousCommand() {
 // // 1. Create trajectory settings

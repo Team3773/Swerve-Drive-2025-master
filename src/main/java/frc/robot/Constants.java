@@ -6,72 +6,48 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import swervelib.math.Matter;
 
 public final class Constants {
+    public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+    public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
+    public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
+        // Maximum speed of the robot in meters per second, used to limit acceleration.
+
+    public static final class AutonConstants
+    {
+        public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
+        public static final PIDConstants ANGLE_PID       = new PIDConstants(0.4, 0, 0.01);
+    }
+
+    public static final class DrivebaseConstants
+    {
+        // Hold time on motor brakes when disabled
+        public static final double WHEEL_LOCK_TIME = 10; // seconds
+    }
+
+    public static class OperatorConstants
+    {
+        // Joystick Deadband
+        public static final double LEFT_X_DEADBAND  = 0.1;
+        public static final double LEFT_Y_DEADBAND  = 0.1;
+        public static final double RIGHT_X_DEADBAND = 0.1;
+        public static final double TURN_CONSTANT    = 6;
+    }
 
     public static final class ModuleConstants {
 
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-        // public static final double kDrivingMotorReduction = 1 / 12.8;
-        // public static final double kTurningMotorGearRatio = 1 / 18.0;
-
-        // Gear Ratios
-        // The MAXSwerve module can be configured with one of three pinion gears: 12T,
-        // 13T, or 14T.
-        // This changes the drive speed of the module (a pinion gear with more teeth
-        // will result in a
-        // robot that drives faster).
-        public static final int kDrivingMotorPinionTeeth = 14;
-        // 45 teeth on the wheel's bevel gear, 16 teeth on the first-stage spur gear, 19
-        // teeth on the bevel pinion
-        public static final double kDrivingMotorReduction = (45.0 * 19.0) / (kDrivingMotorPinionTeeth * 15);
-        // Invert the turning encoder, since the output shaft rotates in the opposite
-        // direction of
-        // the steering motor in the MAXSwerve Module.
-        //
-        public static final boolean kTurningEncoderInverted = true;
-
-        // Calculations required for driving motor conversion factors and feed forward
-        public static final double kDrivingMotorFreeSpeedRps = 5676 / 60;
-        public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-
-        public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
-                / kDrivingMotorReduction;
-
-        public static final double kDrivingEncoderPositionFactor = (kWheelDiameterMeters * Math.PI)
-                / kDrivingMotorReduction; // meters
-        public static final double kDrivingEncoderVelocityFactor = ((kWheelDiameterMeters * Math.PI)
-                / kDrivingMotorReduction) / 60.0; // meters per second
-
-        public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
-        public static final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
-
-        public static final double kTurningEncoderPositionPIDMinInput = 0; // radians
-        public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // radians
-
-        public static final double kDrivingP = 0.04;
-        public static final double kDrivingI = 0;
-        public static final double kDrivingD = 0;
-        public static final double kDrivingFF = 1 / kDriveWheelFreeSpeedRps;
-        public static final double kDrivingMinOutput = -1;
-        public static final double kDrivingMaxOutput = 1;
-
-        public static final double kTurningP = 1;
-        public static final double kTurningI = 0;
-        public static final double kTurningD = 0;
-        public static final double kTurningFF = 0;
-        public static final double kTurningMinOutput = -1;
-        public static final double kTurningMaxOutput = 1;
-
-        public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
-        public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
-
-        public static final int kDrivingMotorCurrentLimit = 40; // amps
-        public static final int kTurningMotorCurrentLimit = 20; // amps
-
+        public static final double kDriveGearRatio = 12.8;
+        public static final double kTurningMotorGearRatio = 18.0;
+        public static final int kDrivePPR = 42;
+        public static final int kTurningEncoderCPR = 4096;
+        public static final int kTurningEncoderPPR = kTurningEncoderCPR / 4;
+        public static final double kmaxSpeed = 1.5;
     }
 
     public static final class DriveConstants {
