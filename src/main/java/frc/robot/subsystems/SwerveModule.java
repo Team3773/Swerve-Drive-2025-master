@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.ModuleConstants;
 import com.revrobotics.SparkPIDController;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
@@ -21,7 +22,7 @@ public class SwerveModule {
   private final CANSparkBase m_turningSparkMax;
 
   private final RelativeEncoder m_drivingEncoder;
-  private final AbsoluteEncoder m_turningEncoder;
+  private final RelativeEncoder m_turningEncoder;
 
   private final SparkPIDController m_drivingPIDController;
   private final SparkPIDController m_turningPIDController;
@@ -35,7 +36,7 @@ public class SwerveModule {
    * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
    * Encoder.
    */
-  public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
+  public SwerveModule(int drivingCANId, int turningCANId, int turningEncoderId, double chassisAngularOffset) {
     m_drivingSparkMax = new CANSparkMax(drivingCANId, CANSparkLowLevel.MotorType.kBrushless);
     m_turningSparkMax = new CANSparkMax(turningCANId, CANSparkLowLevel.MotorType.kBrushless);
 
@@ -46,7 +47,9 @@ public class SwerveModule {
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     m_drivingEncoder = m_drivingSparkMax.getEncoder();
-    m_turningEncoder = m_turningSparkMax.getAbsoluteEncoder();
+    
+    m_turningEncoder = m_turningSparkMax.getEncoder();
+    // m_turningEncoder = new CANcoder(turningEncoderId);
     m_drivingPIDController = m_drivingSparkMax.getPIDController();
     m_turningPIDController = m_turningSparkMax.getPIDController();
     m_drivingPIDController.setFeedbackDevice(m_drivingEncoder);

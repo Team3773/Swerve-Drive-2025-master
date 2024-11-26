@@ -34,22 +34,26 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule m_frontLeft = new SwerveModule(
             DriveConstants.kFrontLeftDriveMotorPort,
             DriveConstants.kFrontLeftTurningMotorPort,
+            DriveConstants.kFrontLeftTurningAbsoluteEncoderPort,
             DriveConstants.kFrontLeftChassisAngularOffset);
 
     private final SwerveModule m_frontRight = new SwerveModule(
 
             DriveConstants.kFrontRightDriveMotorPort,
             DriveConstants.kFrontRightTurningMotorPort,
+            DriveConstants.kFrontRightTurningAbsoluteEncoderPort,
             DriveConstants.kFrontRightChassisAngularOffset);
 
     private final SwerveModule m_rearLeft = new SwerveModule(
             DriveConstants.kBackLeftDriveMotorPort,
             DriveConstants.kBackLeftTurningMotorPort,
+            DriveConstants.kBackLeftTurningAbsoluteEncoderPort,
             DriveConstants.kBackLeftChassisAngularOffset);
 
     private final SwerveModule m_rearRight = new SwerveModule(
             DriveConstants.kBackRightDriveMotorPort,
             DriveConstants.kBackRightTurningMotorPort,
+            DriveConstants.kBackRightTurningAbsoluteEncoderPort,
             DriveConstants.kBackRightChassisAngularOffset);
 
     double gyroAutoAngularOffset = 0;
