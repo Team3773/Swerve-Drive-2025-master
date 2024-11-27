@@ -42,8 +42,8 @@ public final class Constants {
     public static final class ModuleConstants {
 
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-        public static final double kDriveGearRatio = 12.8;
-        public static final double kTurningMotorGearRatio = 18.0;
+        public static final double kDriveGearRatio = 6.75;
+        public static final double kTurningMotorGearRatio = 7;
         public static final int kDrivePPR = 42;
         public static final int kTurningEncoderCPR = 4096;
         public static final int kTurningEncoderPPR = kTurningEncoderCPR / 4;
