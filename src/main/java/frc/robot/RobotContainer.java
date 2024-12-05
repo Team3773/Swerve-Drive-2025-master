@@ -150,62 +150,6 @@ public class RobotContainer
   }
 }
 
-// public class RobotContainer {
-
-//         private SwerveSubsystem swerveSubsystem;
-        
-//         CommandXboxController m_driverController;
-//         private RobotShared m_robotShared = RobotShared.getInstance();
-
-//         SendableChooser<Command> autoChooser;
-
-//         public RobotContainer() {
-//                 initSubsystems();
-//                 initInputDevices();
-//                 NamedCommands.registerCommand("ResetGyro", new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-
-//                 autoChooser = AutoBuilder.buildAutoChooser();
-//                 SmartDashboard.putData("Auto Mode", autoChooser);
-
-//                 configureButtonBindings();
-//         }
-
-//         private void initSubsystems() {
-//                 m_robotShared = RobotShared.getInstance();
-
-//                 swerveSubsystem = m_robotShared.getDriveSubsystem();
-//                 // m_robotShared.getPhotonVision();
-
-//                 DriverTab.getInstance();
-//         }
-//         private void initInputDevices(){
-//                 m_driverController = m_robotShared.getDriverController();
-//         }
-
-//         private void configureButtonBindings() {
-//                 m_driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-
-//                 m_driverController.leftStick()
-//                                 .whileTrue(new RunCommand(
-//                                                 () -> swerveSubsystem.drive(
-//                                                                 -MathUtil.applyDeadband(m_driverController.getLeftY(),
-//                                                                                 OIConstants.kDeadband) / 2,
-//                                                                 -MathUtil.applyDeadband(m_driverController.getLeftX(),
-//                                                                                 OIConstants.kDeadband) / 2,
-//                                                                 -MathUtil.applyDeadband(m_driverController.getRightX(),
-//                                                                                 OIConstants.kDeadband) / 2,
-//                                                                 true, true, OIConstants.kUseQuadraticInput),
-//                                                 swerveSubsystem));
-
-//                 m_driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.setForwardFormation()));
-//                 m_driverController.x().onTrue(new InstantCommand(() -> swerveSubsystem.setXFormation()));
-//         }
-
-//         public Command getAutonomousCommand() {
-//                 return autoChooser.getSelected();
-//         }
-// }
-
 // public Command getAutonomousCommand() {
 // // 1. Create trajectory settings
 // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
