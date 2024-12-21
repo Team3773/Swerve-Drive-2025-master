@@ -32,7 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotContainer
 {
 
-  private static final Command PathPlannerPath = null;
+  // private static final Command PathPlannerPath = null;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(OIConstants.kDriverControllerPort);
   // The robot's subsystems and commands are defined here...
@@ -137,8 +137,8 @@ public class RobotContainer
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-     return PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-  
+    try{
+     PathPlannerPath path = PathPlannerPath.fromPathFile("New New Path");
      return AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
