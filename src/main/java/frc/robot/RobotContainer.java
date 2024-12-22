@@ -138,7 +138,7 @@ public class RobotContainer
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     try{
-     PathPlannerPath path = PathPlannerPath.fromPathFile("New New Path");
+     PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
      return AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
