@@ -10,10 +10,13 @@ import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.ReplanningConfig;
+// import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+// import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -126,7 +129,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
-    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.ModuleConstants.kmaxSpeed);
+    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.ModuleConstants.kmaxSpeed, new Pose2d());
   }
 
   /**
@@ -158,32 +161,67 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void setupPathPlanner()
   {
-    AutoBuilder.configureHolonomic(
-        this::getPose, // Robot pose supplier
-        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-        this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                         Constants.AutonConstants.TRANSLATION_PID,
-                                         // Translation PID constants
-                                         Constants.AutonConstants.ANGLE_PID,
-                                         // Rotation PID constants
-                                         4.5,
-                                         // Max module speed, in m/s
-                                         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
-                                         // Drive base radius in meters. Distance from robot center to furthest module.
-                                         new ReplanningConfig()
-                                         // Default path replanning config. See the API for the options here
-        ),
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-          var alliance = DriverStation.getAlliance();
-          return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
-        },
-        this // Reference to this subsystem to set requirements
-                                  );
+    RobotConfig config = new RobotConfig(Constants.ROBOT_MASS, Constants.MOI, Constants.ModuleConstants.moduleConfig, this.getKinematics().getModules());
+    try{
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+
+    AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    Constants.AutonConstants.TRANSLATION_PID, // Translation PID constants
+                    Constants.AutonConstants.ANGLE_PID // Rotation PID constants
+            ),
+            config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+    );
+
+
+
+
+    // AutoBuilder.configureHolonomic(
+    //     this::getPose, // Robot pose supplier
+    //     this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+    //     this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    //     this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+    //     new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+    //                                      Constants.AutonConstants.TRANSLATION_PID,
+    //                                      // Translation PID constants
+    //                                      Constants.AutonConstants.ANGLE_PID,
+    //                                      // Rotation PID constants
+    //                                      4.5,
+    //                                      // Max module speed, in m/s
+    //                                      swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
+    //                                      // Drive base radius in meters. Distance from robot center to furthest module.
+    //                                      new ReplanningConfig()
+    //                                      // Default path replanning config. See the API for the options here
+    //     ),
+    //     () -> {
+    //       // Boolean supplier that controls when the path will be mirrored for the red alliance
+    //       // This will flip the path being followed to the red side of the field.
+    //       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    //       var alliance = DriverStation.getAlliance();
+    //       return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+    //     },
+    //     this // Reference to this subsystem to set requirements
+    //                               );
   }
 
   /**
@@ -276,16 +314,17 @@ public class SwerveSubsystem extends SubsystemBase {
   {
 // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumVelocity(), 4.0,
-        swerveDrive.getMaximumAngularVelocity(), Units.degreesToRadians(720));
+        swerveDrive.getMaximumChassisVelocity(), 4.0,
+        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
 // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    return AutoBuilder.pathfindToPose(
-        pose,
-        constraints,
-        0.0, // Goal end velocity in meters/sec
-        0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-                                     );
+  return AutoBuilder.pathfindToPose(pose,constraints);
+    // return AutoBuilder.pathfindToPose(
+    //     pose,
+    //     constraints,
+    //     0.0, // Goal end velocity in meters/sec
+    //     0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+    //                                  );
   }
 
   /**
@@ -311,7 +350,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                       headingX.getAsDouble(),
                                                                       headingY.getAsDouble(),
                                                                       swerveDrive.getOdometryHeading().getRadians(),
-                                                                      swerveDrive.getMaximumVelocity()));
+                                                                      swerveDrive.getMaximumChassisVelocity()));
     });
   }
 
@@ -332,7 +371,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                       translationY.getAsDouble(),
                                                                       rotation.getAsDouble() * Math.PI,
                                                                       swerveDrive.getOdometryHeading().getRadians(),
-                                                                      swerveDrive.getMaximumVelocity()));
+                                                                      swerveDrive.getMaximumChassisVelocity()));
     });
   }
 
@@ -391,17 +430,17 @@ public class SwerveSubsystem extends SubsystemBase {
                                  );
   }
 
-  /**
-   * Sets the maximum speed of the swerve drive.
-   *
-   * @param maximumSpeedInMetersPerSecond the maximum speed to set for the swerve drive in meters per second
-   */
-  public void setMaximumSpeed(double maximumSpeedInMetersPerSecond)
-  {
-    swerveDrive.setMaximumSpeed(maximumSpeedInMetersPerSecond,
-                                false,
-                                swerveDrive.swerveDriveConfiguration.physicalCharacteristics.optimalVoltage);
-  }
+  // /**
+  //  * Sets the maximum speed of the swerve drive.
+  //  *
+  //  * @param maximumSpeedInMetersPerSecond the maximum speed to set for the swerve drive in meters per second
+  //  */
+  // public void setMaximumSpeed(double maximumSpeedInMetersPerSecond)
+  // {
+  //   swerveDrive.setMaximumSpeed(maximumSpeedInMetersPerSecond,
+  //                               false,
+  //                               swerveDrive.swerveDriveConfiguration.physicalCharacteristics.optimalVoltage);
+  // }
 
   /**
    * Replaces the swerve module feedforward with a new SimpleMotorFeedforward object.
@@ -428,9 +467,9 @@ public class SwerveSubsystem extends SubsystemBase {
     return run(() -> {
       // Make the robot move
       swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
-                            translationX.getAsDouble() * swerveDrive.getMaximumVelocity(),
-                            translationY.getAsDouble() * swerveDrive.getMaximumVelocity()), 0.8),
-                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
+                            translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+                            translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()), 0.8),
+                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
                         true,
                         false);
     });
