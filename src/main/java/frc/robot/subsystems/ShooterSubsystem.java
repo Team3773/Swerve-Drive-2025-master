@@ -23,13 +23,14 @@ import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 /** Creates new ShooterSubsystem. */
 public class ShooterSubsystem extends SubsystemBase {
     
-  private SparkMax motor;
+  private SparkMax leftMotor;
+  private SparkMax rightMotor;
   private SparkMaxConfig motSparkMaxConfig;
   private DigitalInput beamBreakSensor;
 
     public ShooterSubsystem() {
-        motor = new SparkMax(Constants.ShooterConstants.LEFT_CAN_ID, MotorType.kBrushless);
-        motor = new SparkMax(Constants.ShooterConstants.RIGHT_CAN_ID, MotorType.kBrushless);
+        leftMotor = new SparkMax(Constants.ShooterConstants.LEFT_CAN_ID, MotorType.kBrushless);
+        rightMotor = new SparkMax(Constants.ShooterConstants.RIGHT_CAN_ID, MotorType.kBrushless);
 
          // Initialize the DigitalInput object for the beam break sensor (replace 0 with your digital port number)
          beamBreakSensor = new DigitalInput(0);}
@@ -41,11 +42,13 @@ public class ShooterSubsystem extends SubsystemBase {
          // Check if the beam is broken
          if (beamBroken) {
              // Stop the motor if the beam is broken
-             motor.set(0.0);
+             leftMotor.set(0.0);
+             rightMotor.set(0.0);
              System.out.println("Beam broken! Motor stopped.");
          } else {
              // Keep the motor running (e.g., at half speed) if the beam is intact
-             motor.set(0.5);
+             leftMotor.set(0.5);
+             rightMotor.set(0.5);
              System.out.println("Beam intact! Motor running.");
          }
     }
