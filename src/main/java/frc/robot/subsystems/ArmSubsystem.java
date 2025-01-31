@@ -23,6 +23,6 @@ public class ArmSubsystem extends SubsystemBase {
   private RelativeEncoder encoder;
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    motor = new SparkFlex(Constants.ArmSubsystem.CAN_ID, MotorType.kBrushless);
+    motor = new SparkFlex(Constants.ArmConstants.CAN_ID, MotorType.kBrushless);
   }
 }
