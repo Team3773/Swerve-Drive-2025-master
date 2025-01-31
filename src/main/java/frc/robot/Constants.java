@@ -64,7 +64,20 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        public static final int CAN_ID = 10;
+        public static final int CAN_ID = 13;
         public static final int stepValue = 5;
     }
+
+    public static final class ArmSubsystem {
+        public static final int CAN_ID = 14;
+    }
+
+    public static final class ShooterSubsystem {
+        public static final int CAN_ID = 15;
+    }
+
+    public static final class ClimbSubsystem {
+        public static final int CAN_ID = 16;
+    }
+
 }
