@@ -68,16 +68,17 @@ public final class Constants {
         public static final int stepValue = 5;
     }
 
-    public static final class ArmSubsystem {
+    public static final class ArmConstants {
         public static final int CAN_ID = 14;
     }
 
-    public static final class ShooterSubsystem {
-        public static final int CAN_ID = 15;
+    public static final class ShooterConstants {
+        public static final int LEFT_CAN_ID = 15;
+        public static final int RIGHT_CAN_ID = 16;
     }
 
-    public static final class ClimbSubsystem {
-        public static final int CAN_ID = 16;
+    public static final class ClimbConstants {
+        public static final int CAN_ID = 17;
     }
 
 }
