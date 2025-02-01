@@ -75,6 +75,8 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int LEFT_CAN_ID = 15;
         public static final int RIGHT_CAN_ID = 16;
+        public static final int EMITTER_PORT = 0;
+        public static final int RECEIVER_PORT = 1;
     }
 
     public static final class ClimbConstants {
