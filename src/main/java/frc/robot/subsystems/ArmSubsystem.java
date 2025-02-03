@@ -20,7 +20,7 @@ import frc.robot.Constants;
 public class ArmSubsystem extends SubsystemBase {
 
   private SparkMax motor;
-  private SparkFlexConfig motorConfig;
+  private SparkMaxConfig motorConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
   /** Creates a new ArmSubsystem. */
