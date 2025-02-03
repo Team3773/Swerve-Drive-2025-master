@@ -26,5 +26,22 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     motor = new SparkMax(Constants.ArmConstants.CAN_ID, MotorType.kBrushless);
+    encoder = motor.getEncoder();
+
+    motorConfig = new SparkMaxConfig();
+
+    motorConfig.encoder
+        .positionConversionFactor(1)
+        .velocityConversionFactor(1);
+
+    motorConfig.closedLoop
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        // Set PID values for position control.
+        .p(0.04)
+        .i(1e-5)
+        .d(0.25)
+        .outputRange(-1, 1)
+        // Set PID values for velocity control.
+        .velocityFF(0);
   }
 }
