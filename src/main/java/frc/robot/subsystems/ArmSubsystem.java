@@ -10,19 +10,21 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-//NEO Vortex Spark FLEX with 67:1 Gear Ratio
+//NEO Motor Spark MAX with 67:1 Gear Ratio
 public class ArmSubsystem extends SubsystemBase {
 
-  private SparkFlex motor;
+  private SparkMax motor;
   private SparkFlexConfig motorConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    motor = new SparkFlex(Constants.ArmConstants.CAN_ID, MotorType.kBrushless);
+    motor = new SparkMax(Constants.ArmConstants.CAN_ID, MotorType.kBrushless);
   }
 }
