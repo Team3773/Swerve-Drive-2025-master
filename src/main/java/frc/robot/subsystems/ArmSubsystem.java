@@ -6,9 +6,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
@@ -23,6 +21,10 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkMaxConfig motorConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
+
+  double currentRotationSetpoint = 0;
+  double armRotationStepValue = 0.01;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     motor = new SparkMax(Constants.ArmConstants.CAN_ID, MotorType.kBrushless);
@@ -37,11 +39,39 @@ public class ArmSubsystem extends SubsystemBase {
     motorConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // Set PID values for position control.
-        .p(0.04)
-        .i(1e-5)
-        .d(0.25)
+        .p(0)
+        .i(0)
+        .d(0)
         .outputRange(-1, 1)
         // Set PID values for velocity control.
         .velocityFF(0);
   }
-}
+
+      @Override
+      public void periodic() {
+        SmartDashboard.putNumber("Arm setPoint", currentRotationSetpoint);
+        SmartDashboard.putNumber("Arm Encoder Position", encoder.getPosition());
+      }
+      
+      public void incrementPosition(){
+        currentRotationSetpoint += armRotationStepValue;
+      }
+      public void decrementPosition(){
+        currentRotationSetpoint -= armRotationStepValue;
+      }
+    
+      public void goToPosition(double value){
+        currentRotationSetpoint = value;
+      }
+    
+      public double getCurrentPosition(){
+        return encoder.getPosition();
+      }
+
+      public void stopLift() {
+        var speed = 0;
+        System.out.println("Intake speed:" + speed);
+        motor.set(speed);
+      }
+  }
+
