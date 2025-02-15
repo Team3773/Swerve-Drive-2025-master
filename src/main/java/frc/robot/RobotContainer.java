@@ -196,10 +196,7 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(Commands.none());
       driverXbox.a().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
       driverXbox.b().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
-      shooterSubsystem.setDefaultCommand(new ShooterCommand(
-        shooterSubsystem,
-        driverXbox.rightBumper()
-       ));
+      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,driverXbox.rightBumper()));
       // drivebase.setDefaultCommand(
       //     !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
     } else
@@ -217,10 +214,7 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(Commands.none());
       driverXbox.a().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
       driverXbox.b().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
-      shooterSubsystem.setDefaultCommand(new ShooterCommand(
-        shooterSubsystem,
-        driverXbox.rightBumper()
-       ));
+      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,driverXbox.rightBumper()));
       // drivebase.setDefaultCommand(
       //     !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
     }

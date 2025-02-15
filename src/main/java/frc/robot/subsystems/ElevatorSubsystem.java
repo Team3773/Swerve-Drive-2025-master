@@ -12,8 +12,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,19 +21,19 @@ import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-  private SparkMax motor;
-  private SparkMaxConfig motorConfig;
+  private SparkFlex motor;
+  private SparkFlexConfig motorConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
 
   private double currentSetPoint = 0;
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
-    motor = new SparkMax(Constants.ElevatorConstants.CAN_ID, MotorType.kBrushless);
+    motor = new SparkFlex(Constants.ElevatorConstants.CAN_ID, MotorType.kBrushless);
     closedLoopController = motor.getClosedLoopController();
     encoder = motor.getEncoder();
 
-    motorConfig = new SparkMaxConfig();
+    motorConfig = new SparkFlexConfig();
 
     motorConfig.encoder
         .positionConversionFactor(1)
