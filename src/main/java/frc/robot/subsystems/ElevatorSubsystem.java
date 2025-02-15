@@ -76,15 +76,17 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
   public void incrementPosition() {
     currentSetPoint += Constants.ElevatorConstants.stepValue;
+    goToPosition(currentSetPoint);
   }
 
   public void decrementPosition() {
     currentSetPoint -= Constants.ElevatorConstants.stepValue;
+    goToPosition(currentSetPoint);
   }
 
   public void goToPosition(double value) {
     currentSetPoint = value;
-    closedLoopController.setReference(value, ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+    closedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot1);
   }
 
   public double getCurrentPosition() {
