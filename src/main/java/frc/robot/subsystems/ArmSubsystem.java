@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 //NEO Motor Spark MAX with 67:1 Gear Ratio
+//True Gear Ratio is currently 60:1 Gear Ratio * ~2:1 Sprocket Ratio = ~120:1 Ratio
 public class ArmSubsystem extends SubsystemBase {
 
   private SparkMax motor;
@@ -42,7 +43,7 @@ public class ArmSubsystem extends SubsystemBase {
         .p(0)
         .i(0)
         .d(0)
-        .outputRange(-1, 1)
+        .outputRange(-0.25, 0.25)
         // Set PID values for velocity control.
         .velocityFF(0);
   }
@@ -70,7 +71,7 @@ public class ArmSubsystem extends SubsystemBase {
 
       public void stopLift() {
         var speed = 0;
-        System.out.println("Intake speed:" + speed);
+        System.out.println("Arm speed:" + speed);
         motor.set(speed);
       }
   }
