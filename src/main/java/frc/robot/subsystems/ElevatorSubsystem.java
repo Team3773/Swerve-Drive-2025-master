@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -25,6 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkFlexConfig motorConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
+  private DigitalInput limitSwitch;
 
   private double currentSetPoint = 0;
   /** Creates a new ElevatorSubsystem. */
@@ -32,6 +34,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     motor = new SparkFlex(Constants.ElevatorConstants.CAN_ID, MotorType.kBrushless);
     closedLoopController = motor.getClosedLoopController();
     encoder = motor.getEncoder();
+    
+    limitSwitch = new DigitalInput(Constants.ElevatorConstants.LIMIT_PORT);
 
     motorConfig = new SparkFlexConfig();
 
