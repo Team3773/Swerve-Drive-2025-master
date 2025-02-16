@@ -46,8 +46,8 @@ public class ShooterSubsystem extends SubsystemBase {
              System.out.println("Right bumper pressed! Motor running.");
          } else if (receiverActive) {
              // Run the motors if the right bumper is pressed
-             leftMotor.set(0.5);
-             rightMotor.set(0.5);
+             leftMotor.set(motorSpeed);
+             rightMotor.set(motorSpeed);
              System.out.println("Beam intact! Motor running.");
          } else {
              // Stop the motor if the right bumper is not pressed

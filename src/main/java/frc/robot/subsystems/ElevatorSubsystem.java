@@ -73,6 +73,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator setPoint", currentSetPoint);
     SmartDashboard.putNumber("Elevator Encoder Position", getCurrentPosition());
     SmartDashboard.putNumber("Elevator Velocity", encoder.getVelocity());
+
+    // Check the limit switch and reset the encoder if it is pressed
+    if (isLimitSwitchPressed()) {
+      resetEncoder();
+    }
+  }
+  
+  // Define the method only once
+  public boolean isLimitSwitchPressed() {
+    return !limitSwitch.get();  // Assuming limit switch is normally closed
   }
 
   public void resetEncoder(){
