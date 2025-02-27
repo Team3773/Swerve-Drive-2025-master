@@ -69,10 +69,7 @@ public final class Constants {
         public static final int LIMIT_PORT = 1;
     }
 
-    public static final class ArmConstants {
-        public static final int CAN_ID = 14;
-        public static final int stepValue = 5;
-    }
+    //This is where the armsystem is in the normal branch
 
     public static final class ShooterConstants {
         public static final int LEFT_CAN_ID = 15;
@@ -85,9 +82,6 @@ public final class Constants {
         public static final int stepValue = 5;
     }
 
-    public static final class AlgaeIntakeSubystemConstants {
-        public static final int LEFT_CAN_ID = 19;
-        public static final int RIGHT_CAN_ID = 20;
-    }
+    //This is where the algae subsystem would be in the normal branch
 
 }
