@@ -61,22 +61,24 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
+        public static final int kCoDriverControllerPort = 1;
     }
 
     public static final class ElevatorConstants {
-        public static final int CAN_ID = 1;
+        public static final int RIGHT_CAN_ID = 1;
+        public static final int LEFT_CAN_ID = 2;
         public static final int stepValue = 5;
-        public static final int LIMIT_PORT = 1;
+        public static final int LIMIT_PORT = 2;
     }
 
     public static final class ArmConstants {
-        public static final int CAN_ID = 4;
+        public static final int CAN_ID = 5;
         public static final int stepValue = 5;
     }
 
     public static final class ShooterConstants {
         public static final int LEFT_CAN_ID = 3;
-        public static final int RIGHT_CAN_ID = 2;
+        public static final int RIGHT_CAN_ID = 4;
         public static final int RECEIVER_PORT = 0;
     }
 
@@ -86,7 +88,7 @@ public final class Constants {
     }
 
     public static final class AlgaeIntakeSubystemConstants {
-        public static final int CAN_ID = 5;
+        public static final int CAN_ID = 6;
     }
 
 }

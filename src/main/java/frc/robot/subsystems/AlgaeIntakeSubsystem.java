@@ -29,7 +29,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
               double motorSpeed = 0.5;
       
                // Check if the beam is broken
-               if (rightBumperPressed) {
+               if (getXButtonPressed) {
                    // Stop the motor if the beam is broken
                    motor.set(motorSpeed);
                    System.out.println("Right bumper pressed! Motor running.");
@@ -38,12 +38,20 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
                    motor.set(0.0);
                    System.out.println("Right bumper not pressed! Motor stopped.");
                }
+               if (getYButtonPressed) {
+                // Stop the motor if the beam is broken
+                motor.set(-0.5);
+                System.out.println("Right bumper pressed! Motor running.");
+            } else {
+                // Stop the motor if the right bumper is not pressed
+                motor.set(0.0);
+                System.out.println("Right bumper not pressed! Motor stopped.");
+            }
           }
       
           public void runMotors(double speed) {
               // Adjust speed based on gear ratio
               double adjustedSpeed = speed;
-              leftMotor.set(adjustedSpeed);
-              rightMotor.set(adjustedSpeed);
+              motor.set(adjustedSpeed);
           }
 }
