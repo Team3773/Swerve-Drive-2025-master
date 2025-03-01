@@ -86,8 +86,7 @@ public final class Constants {
     }
 
     public static final class AlgaeIntakeSubystemConstants {
-        public static final int LEFT_CAN_ID = 5;
-        public static final int RIGHT_CAN_ID = 6;
+        public static final int CAN_ID = 5;
     }
 
 }

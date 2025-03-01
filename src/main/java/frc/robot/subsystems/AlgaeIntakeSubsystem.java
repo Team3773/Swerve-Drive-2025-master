@@ -20,26 +20,22 @@ import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 
 public class AlgaeIntakeSubsystem extends SubsystemBase {
     
-    private SparkMax leftMotor;
-    private SparkMax rightMotor;
+    private SparkMax motor;
    
     /** Creates new ShooterSubsystem. */
              public AlgaeIntakeSubsystem() {
-              leftMotor = new SparkMax(Constants.AlgaeIntakeSubystemConstants.LEFT_CAN_ID, MotorType.kBrushless);
-              rightMotor = new SparkMax(Constants.AlgaeIntakeSubystemConstants.RIGHT_CAN_ID, MotorType.kBrushless);
-    
-               double motorSpeed = 0.5;
+              motor = new SparkMax(Constants.AlgaeIntakeSubystemConstants.CAN_ID, MotorType.kBrushless);
+               
+              double motorSpeed = 0.5;
       
                // Check if the beam is broken
                if (rightBumperPressed) {
                    // Stop the motor if the beam is broken
-                   leftMotor.set(motorSpeed);
-                   rightMotor.set(motorSpeed);
+                   motor.set(motorSpeed);
                    System.out.println("Right bumper pressed! Motor running.");
                } else {
                    // Stop the motor if the right bumper is not pressed
-                   leftMotor.set(0.0);
-                   rightMotor.set(0.0);
+                   motor.set(0.0);
                    System.out.println("Right bumper not pressed! Motor stopped.");
                }
           }
