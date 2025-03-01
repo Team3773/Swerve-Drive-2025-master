@@ -22,7 +22,8 @@ import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-  private SparkFlex motor;
+  private SparkFlex leftMotor;
+  private SparkFlex rightMotor;
   private SparkFlexConfig motorConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
@@ -31,9 +32,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   private double currentSetPoint = 0;
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
-    motor = new SparkFlex(Constants.ElevatorConstants.CAN_ID, MotorType.kBrushless);
-    closedLoopController = motor.getClosedLoopController();
-    encoder = motor.getEncoder();
+    leftMotor = new SparkFlex(Constants.ElevatorConstants.LEFT_CAN_ID, MotorType.kBrushless);
+    rightMotor = new SparkFlex(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
+    closedLoopController = leftMotor.getClosedLoopController();
+    closedLoopController = rightMotor.getClosedLoopController();
+    encoder = leftMotor.getEncoder();
+    encoder = rightMotor.getEncoder();
     
     limitSwitch = new DigitalInput(Constants.ElevatorConstants.LIMIT_PORT);
 

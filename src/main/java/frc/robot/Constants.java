@@ -61,19 +61,21 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
+        public static final int kCoDriverControllerPort = 1;
     }
 
     public static final class ElevatorConstants {
-        public static final int CAN_ID = 13;
+        public static final int LEFT_CAN_ID = 2;
+        public static final int RIGHT_CAN_ID = 1; //CHANGE
         public static final int stepValue = 5;
-        public static final int LIMIT_PORT = 1;
+        public static final int LIMIT_PORT = 2;
     }
 
     //This is where the armsystem is in the normal branch
 
     public static final class ShooterConstants {
-        public static final int LEFT_CAN_ID = 15;
-        public static final int RIGHT_CAN_ID = 16;
+        public static final int LEFT_CAN_ID = 3;
+        public static final int RIGHT_CAN_ID = 4;
         public static final int RECEIVER_PORT = 0;
     }
 
@@ -82,6 +84,6 @@ public final class Constants {
         public static final int stepValue = 5;
     }
 
-    //This is where the algae subsystem would be in the normal branch
+    //This is where the algae subsystem is in the normal branch
 
 }
