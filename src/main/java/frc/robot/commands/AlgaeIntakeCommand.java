@@ -12,13 +12,15 @@ import frc.robot.subsystems.AlgaeIntakeSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlgaeIntakeCommand extends Command {
   /** Creates a new AlgaeIntakeCommand. */
-    AlgaeIntakeSubsystem algaeIntakeSubsystem;
-    BooleanSupplier xSupplier;
-    BooleanSupplier ySupplier;
+    private final AlgaeIntakeSubsystem algaeIntakeSubsystem;
+    private final BooleanSupplier xSupplier;
+    private final BooleanSupplier ySupplier;
 
-  public AlgaeIntakeCommand(AlgaeIntakeSubsystem algaeIntakeSubsystem, BooleanSupplier x ) {
+  public AlgaeIntakeCommand(AlgaeIntakeSubsystem algaeIntakeSubsystem, BooleanSupplier xSupplier, BooleanSupplier ySupplier ) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.xSupplier = x;
+    this.algaeIntakeSubsystem = algaeIntakeSubsystem;
+    this.xSupplier = xSupplier;
+    this.ySupplier = ySupplier;
     addRequirements(algaeIntakeSubsystem);
   }
 
@@ -28,11 +30,21 @@ public class AlgaeIntakeCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (xSupplier.getAsBoolean()) {
+      algaeIntakeSubsystem.startIntake();
+  } else if (ySupplier.getAsBoolean()) {
+      algaeIntakeSubsystem.reverseIntake();
+  } else {
+      algaeIntakeSubsystem.stopIntake();
+  }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    algaeIntakeSubsystem.stopIntake();
+  }
 
   // Returns true when the command should end.
   @Override

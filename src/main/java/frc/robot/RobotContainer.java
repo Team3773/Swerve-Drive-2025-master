@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.AlgaeIntakeCommand;
 import frc.robot.commands.ShooterCommand;
 
 
@@ -199,12 +200,14 @@ public class RobotContainer
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
       driverXbox.leftBumper().onTrue(Commands.none());
       driverXbox.rightBumper().onTrue(Commands.none());
-      coDriverXbox.x().whileTrue(Commands.none());
+      coDriverXbox.x().whileTrue(Commands.runOnce(algaeIntake::startIntake, algaeIntake));
+      coDriverXbox.y().whileTrue(Commands.runOnce(algaeIntake::reverseIntake, algaeIntake));
       coDriverXbox.a().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
       coDriverXbox.b().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
       coDriverXbox.start().whileTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
       coDriverXbox.back().whileTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
-      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,driverXbox.rightBumper()));
+      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,coDriverXbox.rightBumper()));
+    
       // drivebase.setDefaultCommand(
       //     !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
     } else
@@ -220,6 +223,8 @@ public class RobotContainer
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.rightBumper().onTrue(Commands.none());
+      coDriverXbox.x().whileTrue(Commands.runOnce(algaeIntake::startIntake, algaeIntake));
+      coDriverXbox.y().whileTrue(Commands.runOnce(algaeIntake::reverseIntake, algaeIntake));
       coDriverXbox.a().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
       coDriverXbox.b().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
       coDriverXbox.start().whileTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
