@@ -16,11 +16,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -51,6 +53,7 @@ public class RobotContainer
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
+  private final ArmSubsystem armSubsystem = new ArmSubsystem();
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -200,12 +203,15 @@ public class RobotContainer
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
       driverXbox.leftBumper().onTrue(Commands.none());
       driverXbox.rightBumper().onTrue(Commands.none());
+
       coDriverXbox.x().whileTrue(Commands.runOnce(algaeIntake::startIntake, algaeIntake));
       coDriverXbox.y().whileTrue(Commands.runOnce(algaeIntake::reverseIntake, algaeIntake));
-      coDriverXbox.a().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
-      coDriverXbox.b().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
+      coDriverXbox.povDown().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
+      coDriverXbox.povUp().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
       coDriverXbox.start().whileTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
       coDriverXbox.back().whileTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
+      coDriverXbox.b().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
+      coDriverXbox.a().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
       shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,coDriverXbox.rightBumper()));
     
       // drivebase.setDefaultCommand(
@@ -223,13 +229,17 @@ public class RobotContainer
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.rightBumper().onTrue(Commands.none());
+
       coDriverXbox.x().whileTrue(Commands.runOnce(algaeIntake::startIntake, algaeIntake));
       coDriverXbox.y().whileTrue(Commands.runOnce(algaeIntake::reverseIntake, algaeIntake));
-      coDriverXbox.a().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
-      coDriverXbox.b().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
+      coDriverXbox.povDown().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
+      coDriverXbox.povUp().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
       coDriverXbox.start().whileTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
       coDriverXbox.back().whileTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
-      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,driverXbox.rightBumper()));
+      coDriverXbox.b().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
+      coDriverXbox.a().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
+
+      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,coDriverXbox.rightBumper()));
       // drivebase.setDefaultCommand(
       //     !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
     }
