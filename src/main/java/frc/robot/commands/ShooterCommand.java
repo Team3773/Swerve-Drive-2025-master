@@ -17,6 +17,7 @@ public class ShooterCommand extends Command {
     
   public ShooterCommand(ShooterSubsystem shooterSubsystem, BooleanSupplier bumper ) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.shooterSubsystem = shooterSubsystem;
     this.bumperSupplier = bumper;
     addRequirements(shooterSubsystem);
   }
