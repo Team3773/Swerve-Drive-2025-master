@@ -29,7 +29,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final SparkClosedLoopController rightClosedLoopController;
   private final RelativeEncoder leftEncoder;
   private final RelativeEncoder rightEncoder;
-  private DigitalInput limitSwitch;
+  private DigitalInput resetlimitSwitch;
+  private DigitalInput toplimitSwitch;
 
   private double currentSetPoint = 0;
   /** Creates a new ElevatorSubsystem. */
@@ -41,7 +42,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     leftEncoder = leftMotor.getEncoder();
     rightEncoder = rightMotor.getEncoder();
     
-    limitSwitch = new DigitalInput(Constants.ElevatorConstants.LIMIT_PORT);
+    resetlimitSwitch = new DigitalInput(Constants.ElevatorConstants.RESET_LIMIT_PORT);
+    toplimitSwitch = new DigitalInput(Constants.ElevatorConstants.TOP_LIMIT_PORT);
 
     motorConfig = new SparkFlexConfig();
 
@@ -80,14 +82,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Right Velocity", rightEncoder.getVelocity());
 
     // Check the limit switch and reset the encoder if it is pressed
-    if (isLimitSwitchPressed()) {
+    if (isResetLimitSwitchPressed()) {
       resetEncoder();
     }
   }
   
   // Define the method only once
-  public boolean isLimitSwitchPressed() {
-    return !limitSwitch.get();  // Assuming limit switch is normally closed
+  public boolean isResetLimitSwitchPressed() {
+    return !resetlimitSwitch.get();  // Assuming limit switch is normally closed
+  }
+
+  public boolean isTopLimitSwitchPressed() {
+    return !toplimitSwitch.get(); // Assuming it's normally closed
   }
 
   public void resetEncoder(){
@@ -95,6 +101,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     rightEncoder.setPosition(0);
   }
   public void incrementPosition() {
+    if (isTopLimitSwitchPressed()) {
+      stop(); // Prevent further movement
+      return;
+  }
     currentSetPoint += Constants.ElevatorConstants.stepValue;
     goToPosition(currentSetPoint);
   }
@@ -105,9 +115,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void goToPosition(double value) {
+    if (isTopLimitSwitchPressed() && value > getCurrentPosition()) {
+      stop(); // Prevent moving beyond the top limit
+      return;
+  }
     currentSetPoint = value;
-    leftClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-    rightClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    leftClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+    rightClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot1);
   }
 
   public double getCurrentPosition() {

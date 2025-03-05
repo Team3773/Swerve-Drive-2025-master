@@ -68,7 +68,8 @@ public final class Constants {
         public static final int RIGHT_CAN_ID = 1;
         public static final int LEFT_CAN_ID = 2;
         public static final int stepValue = 5;
-        public static final int LIMIT_PORT = 2;
+        public static final int RESET_LIMIT_PORT = 2;
+        public static final int TOP_LIMIT_PORT = 3;
     }
 
     public static final class ArmConstants {
