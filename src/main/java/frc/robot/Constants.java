@@ -67,9 +67,31 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int RIGHT_CAN_ID = 1;
         public static final int LEFT_CAN_ID = 2;
-        public static final int stepValue = 5;
-        public static final int RESET_LIMIT_PORT = 2;
-        public static final int TOP_LIMIT_PORT = 3;
+        public static final int RESET_LIMIT_PORT = 2; //PWM
+        public static final int TOP_LIMIT_PORT = 3; //PWM
+        public static final double kElevatorSpeedCoef = .20;
+
+        public static final double kElevator_P = 0.50; // default values --> change later  (0.5)
+        public static final double kElevator_I = 0.0; 
+        public static final double kElevator_D = 0.0; 
+
+        public static final double kElevatorSpeedCoef_Up = 0.50; 
+        public static final double kElevatorSpeedCoef_Down = 0.50;
+    }
+
+    public static class FieldConstants{
+    /* Original measures.
+     * L1 - .46
+     * L2 - .81
+     * L3 - 1.21
+     * L4 - 1.83
+    */
+        public static final double kElevatorHome = -0.15;
+        public static final double kCoralBranchHeight_L2 = -3.750; //-3.567
+        public static final double kCoralBranchHeight_L3 =  -7.50; //-7.272
+        public static final double kCoralBranchHeight_L4 = -14.650; //-14.418
+
+        public static final double kTagBranchOffset = 0.0;
     }
 
     public static final class ArmConstants {
@@ -80,12 +102,12 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int LEFT_CAN_ID = 3;
         public static final int RIGHT_CAN_ID = 4;
-        public static final int RECEIVER_PORT = 0;
+        public static final int RECEIVER_PORT = 0; //PWM
     }
 
     public static final class ClimbConstants {
         public static final int CAN_ID = 16;
-        public static final int stepValue = 5;
+        public static final int stepValue = 1161216;
     }
 
     public static final class AlgaeIntakeSubystemConstants {

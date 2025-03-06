@@ -75,11 +75,12 @@ public class ClimbSubsystem extends SubsystemBase {
   public void resetEncoder(){
     encoder.setPosition(0);
   }
+  
   public void incrementPosition() {
     currentSetPoint += Constants.ClimbConstants.stepValue;
     goToPosition(currentSetPoint);
   }
-
+  
   public void decrementPosition() {
     currentSetPoint -= Constants.ClimbConstants.stepValue;
     goToPosition(currentSetPoint);
