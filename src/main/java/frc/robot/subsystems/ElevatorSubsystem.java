@@ -46,14 +46,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfig = new SparkFlexConfig();
 
         motorConfig.encoder
-            .positionConversionFactor(1)
+            .positionConversionFactor(0.00925)
             .velocityConversionFactor(1);
 
         motorConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .p(1.0)
-            .i(0)
-            .d(0)
+            .i(1e-4)
+            .d(1)
             .outputRange(-1, 1)
             .p(0.0001, ClosedLoopSlot.kSlot1)
             .i(0, ClosedLoopSlot.kSlot1)
@@ -66,7 +66,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Initialize dashboard values
         SmartDashboard.setDefaultNumber("Elevator Target Position", 0);
         SmartDashboard.setDefaultNumber("Elevator Target Velocity", 0);
-
         resetEncoder();
   }
 

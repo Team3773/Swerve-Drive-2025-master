@@ -84,7 +84,7 @@ public final class Constants {
 
     public static final class ClimbConstants {
         public static final int CAN_ID = 16;
-        public static final int stepValue = 5;
+        public static final int stepValue = 100;
     }
 
     public static final class AlgaeIntakeSubystemConstants {
