@@ -1,22 +1,11 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.REVLibError;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig;
-
-import edu.wpi.first.hal.SimDouble;
-import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 
 //NEO 550 with Spark MAX and 5:1 Gear Ratio
 
@@ -24,29 +13,31 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private SparkMax leftMotor;
   private SparkMax rightMotor;
-  private DigitalInput receiverInput;
+  private AnalogInput receiverInput;
   /** Creates new ShooterSubsystem. */
     public ShooterSubsystem() {
         leftMotor = new SparkMax(Constants.ShooterConstants.LEFT_CAN_ID, MotorType.kBrushless);
         rightMotor = new SparkMax(Constants.ShooterConstants.RIGHT_CAN_ID, MotorType.kBrushless);
 
          // Initialize the DigitalInput object for the beam break sensor (replace 0 with your digital port number)
-         receiverInput = new DigitalInput(Constants.ShooterConstants.RECEIVER_PORT);}
+         receiverInput =  new AnalogInput(Constants.ShooterConstants.RECEIVER_PORT);
+        
+        }
 
          public void checkBeamAndControlMotor(boolean rightBumperPressed) {
          // Read the value from the sensor
-         boolean receiverActive = receiverInput.get();
+        
          double motorSpeed = 0.5;
 
          // Check if the beam is broken
          if (rightBumperPressed) {
              // Stop the motor if the beam is broken
-             leftMotor.set(motorSpeed);
+             leftMotor.set(-0.5);
              rightMotor.set(motorSpeed);
-             System.out.println("Right bumper pressed! Motor running.");
-         } else if (receiverActive) {
+             System.out.println("Right bumper pressed! Motor running." );
+         } else if (!beamBroken()) {
              // Run the motors if the right bumper is pressed
-             leftMotor.set(motorSpeed);
+             leftMotor.set(-0.5);
              rightMotor.set(motorSpeed);
              System.out.println("Beam intact! Motor running.");
          } else {
@@ -54,7 +45,15 @@ public class ShooterSubsystem extends SubsystemBase {
              leftMotor.set(0.0);
              rightMotor.set(0.0);
              System.out.println("Right bumper not pressed! Motor stopped.");
+
+
          }
+         System.out.println("Beam Break State "+ receiverInput.getValue());
+
+    }
+
+    public boolean beamBroken(){
+        return receiverInput.getValue() < 50;
     }
 
     public void runMotors(double speed) {

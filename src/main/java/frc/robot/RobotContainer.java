@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.AlgaeIntakeCommand;
+import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ShooterCommand;
 
 
@@ -204,14 +206,12 @@ public class RobotContainer
       driverXbox.leftBumper().onTrue(Commands.none());
       driverXbox.rightBumper().onTrue(Commands.none());
 
-      coDriverXbox.x().whileTrue(Commands.runOnce(algaeIntake::startIntake, algaeIntake));
-      coDriverXbox.y().whileTrue(Commands.runOnce(algaeIntake::reverseIntake, algaeIntake));
       coDriverXbox.povDown().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
       coDriverXbox.povUp().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
-      coDriverXbox.start().whileTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
-      coDriverXbox.back().whileTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
-      coDriverXbox.b().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
-      coDriverXbox.a().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
+      elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean()));
+      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(), climbSubsystem));
+      coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
+      coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
       shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,coDriverXbox.rightBumper()));
     
       // drivebase.setDefaultCommand(
@@ -229,15 +229,12 @@ public class RobotContainer
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.rightBumper().onTrue(Commands.none());
-
-      coDriverXbox.x().whileTrue(Commands.runOnce(algaeIntake::startIntake, algaeIntake));
-      coDriverXbox.y().whileTrue(Commands.runOnce(algaeIntake::reverseIntake, algaeIntake));
       coDriverXbox.povDown().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
       coDriverXbox.povUp().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
-      coDriverXbox.start().whileTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
-      coDriverXbox.back().whileTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
-      coDriverXbox.b().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
-      coDriverXbox.a().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
+      elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean()));
+      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(), climbSubsystem));
+      coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
+      coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
 
       shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,coDriverXbox.rightBumper()));
       // drivebase.setDefaultCommand(

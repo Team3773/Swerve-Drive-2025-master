@@ -10,125 +10,142 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-  private SparkFlex leftMotor;
-  private SparkFlex rightMotor;
-  private SparkFlexConfig motorConfig;
-  private final SparkClosedLoopController leftClosedLoopController;
-  private final SparkClosedLoopController rightClosedLoopController;
-  private final RelativeEncoder leftEncoder;
-  private final RelativeEncoder rightEncoder;
-  private DigitalInput resetlimitSwitch;
-  private DigitalInput toplimitSwitch;
+    private SparkFlex leftMotor;
+    private SparkFlex rightMotor;
+    private final SparkClosedLoopController leftClosedLoopController;
+    // private final SparkClosedLoopController rightClosedLoopController;
+    private final RelativeEncoder leftEncoder;
+    // private final RelativeEncoder rightEncoder;
+    private DigitalInput resetlimitSwitch;
+    private DigitalInput toplimitSwitch;
 
-  private double currentSetPoint = 0;
-  /** Creates a new ElevatorSubsystem. */
-  public ElevatorSubsystem() {
-    leftMotor = new SparkFlex(Constants.ElevatorConstants.LEFT_CAN_ID, MotorType.kBrushless);
-    rightMotor = new SparkFlex(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
-    leftClosedLoopController = leftMotor.getClosedLoopController();
-    rightClosedLoopController = rightMotor.getClosedLoopController();
-    leftEncoder = leftMotor.getEncoder();
-    rightEncoder = rightMotor.getEncoder();
-    
-    resetlimitSwitch = new DigitalInput(Constants.ElevatorConstants.RESET_LIMIT_PORT);
-    toplimitSwitch = new DigitalInput(Constants.ElevatorConstants.TOP_LIMIT_PORT);
+    private double currentSetPoint = 0;
 
-    motorConfig = new SparkFlexConfig();
+    /** Creates a new ElevatorSubsystem. */
+    public ElevatorSubsystem() {
+        leftMotor = new SparkFlex(Constants.ElevatorConstants.LEFT_CAN_ID, MotorType.kBrushless);
+        rightMotor = new SparkFlex(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
+        leftClosedLoopController = leftMotor.getClosedLoopController();
+        // rightClosedLoopController = rightMotor.getClosedLoopController();
+        leftEncoder = leftMotor.getEncoder();
+        // rightEncoder = rightMotor.getEncoder();
 
-        motorConfig.encoder
-            .positionConversionFactor(0.00925)
-            .velocityConversionFactor(1);
+        SparkFlexConfig globalConfig = new SparkFlexConfig();
+        SparkFlexConfig leaderConfig = new SparkFlexConfig();
+        SparkFlexConfig followerConfig = new SparkFlexConfig();
 
-        motorConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .p(1.0)
-            .i(1e-4)
-            .d(1)
-            .outputRange(-1, 1)
-            .p(0.0001, ClosedLoopSlot.kSlot1)
-            .i(0, ClosedLoopSlot.kSlot1)
-            .d(0, ClosedLoopSlot.kSlot1)
-            .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
-            .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
+        resetlimitSwitch = new DigitalInput(Constants.ElevatorConstants.RESET_LIMIT_PORT);
+        toplimitSwitch = new DigitalInput(Constants.ElevatorConstants.TOP_LIMIT_PORT);
 
-        leftMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        leaderConfig.encoder
+                .positionConversionFactor(1)
+                .velocityConversionFactor(1);
+
+        leaderConfig.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .p(1.0)
+                .i(1e-4)
+                .d(1)
+                .outputRange(-1, 1)
+                .p(0.1, ClosedLoopSlot.kSlot1)
+                .i(0, ClosedLoopSlot.kSlot1)
+                .d(0, ClosedLoopSlot.kSlot1)
+                .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
+                .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
+
+        globalConfig
+                .smartCurrentLimit(50)
+                .idleMode(IdleMode.kBrake);
+
+        leaderConfig.apply(globalConfig);
+        followerConfig.apply(globalConfig).follow(leftMotor);
+
+        leftMotor.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        rightMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
         // Initialize dashboard values
         SmartDashboard.setDefaultNumber("Elevator Target Position", 0);
         SmartDashboard.setDefaultNumber("Elevator Target Velocity", 0);
-        resetEncoder();
-  }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Elevator setPoint", currentSetPoint);
-    SmartDashboard.putNumber("Elevator Left Encoder Position", leftEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator Right Encoder Position", rightEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator Left Velocity", leftEncoder.getVelocity());
-    SmartDashboard.putNumber("Elevator Right Velocity", rightEncoder.getVelocity());
-
-    // Check the limit switch and reset the encoder if it is pressed
-    if (isResetLimitSwitchPressed()) {
-      resetEncoder();
+        //Assume position is below the limit switch on startup
+        leftEncoder.setPosition(1.0);
     }
-  }
-  
-  // Define the method only once
-  public boolean isResetLimitSwitchPressed() {
-    return !resetlimitSwitch.get();  // Assuming limit switch is normally closed
-  }
 
-  public boolean isTopLimitSwitchPressed() {
-    return !toplimitSwitch.get(); // Assuming it's normally closed
-  }
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+        SmartDashboard.putNumber("Elevator setPoint", currentSetPoint);
+        SmartDashboard.putNumber("Elevator Left Encoder Position", leftEncoder.getPosition());
+        // SmartDashboard.putNumber("Elevator Right Encoder Position",
+        // rightEncoder.getPosition());
+        SmartDashboard.putNumber("Elevator Left Velocity", leftEncoder.getVelocity());
+        // SmartDashboard.putNumber("Elevator Right Velocity",
+        // rightEncoder.getVelocity());
 
-  public void resetEncoder(){
-    leftEncoder.setPosition(0);
-    rightEncoder.setPosition(0);
-  }
-  public void incrementPosition() {
-    if (isTopLimitSwitchPressed()) {
-      stop(); // Prevent further movement
-      return;
-  }
-    currentSetPoint += Constants.ElevatorConstants.stepValue;
-    goToPosition(currentSetPoint);
-  }
+        // Check the limit switch and reset the encoder if it is pressed
+        if (isResetLimitSwitchPressed()) {
+            resetEncoder();
+            if(this.currentSetPoint <= this.getCurrentPosition()){
+              this.stop();
+          }
+        }
+        if (isTopLimitSwitchPressed()) {
+            if(this.currentSetPoint >= this.getCurrentPosition()){
+                this.stop();
+            }
+        }
+    }
 
-  public void decrementPosition() {
-    currentSetPoint -= Constants.ElevatorConstants.stepValue;
-    goToPosition(currentSetPoint);
-  }
+    // Define the method only once
+    public boolean isResetLimitSwitchPressed() {
+        return resetlimitSwitch.get(); // Assuming limit switch is normally closed
+    }
 
-  public void goToPosition(double value) {
-    if (isTopLimitSwitchPressed() && value > getCurrentPosition()) {
-      stop(); // Prevent moving beyond the top limit
-      return;
-  }
-    currentSetPoint = value;
-    leftClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot1);
-    rightClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot1);
-  }
+    public boolean isTopLimitSwitchPressed() {
+        return toplimitSwitch.get(); // Assuming it's normally closed
+    }
 
-  public double getCurrentPosition() {
-    return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2.0;
-  }
+    public void resetEncoder() {
+        leftEncoder.setPosition(0);
+    }
 
-  public void stop() {
-    leftMotor.set(0);
-    rightMotor.set(0);
-  }
+    public void incrementPosition() {
+        if (isTopLimitSwitchPressed()) {
+            stop(); // Prevent further movement
+            return;
+        }
+        currentSetPoint += Constants.ElevatorConstants.stepValue;
+        goToPosition(currentSetPoint);
+    }
+
+    public void decrementPosition() {
+        currentSetPoint -= Constants.ElevatorConstants.stepValue;
+        goToPosition(currentSetPoint);
+    }
+
+    public void goToPosition(double value) {
+        currentSetPoint = value;
+        leftClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+    }
+
+    public double getCurrentPosition() {
+        return leftEncoder.getPosition();
+    }
+
+    public void stop() {
+        leftMotor.set(0);
+    }
 }

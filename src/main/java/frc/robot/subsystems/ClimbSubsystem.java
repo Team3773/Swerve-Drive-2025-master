@@ -36,8 +36,8 @@ public class ClimbSubsystem extends SubsystemBase {
     motorConfig = new SparkFlexConfig();
 
     motorConfig.encoder
-        .positionConversionFactor(1)
-        .velocityConversionFactor(1);
+      .positionConversionFactor(1.0/324.0)
+      .velocityConversionFactor(1.0/324.0);
 
     motorConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
