@@ -12,19 +12,21 @@ import frc.robot.subsystems.ElevatorSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorCommand extends Command {
   /** Creates a new ElevatorCommand. */
-  Double loadingHeight = 3.0;
-  Double level2Height = 4.7;
-  Double level3Height = 10.0;
+  Double loadingHeight = 22.5;
+  Double unStuckHeight = 26.0;
+  Double level2Height = 51.0;
+  Double level3Height = 87.0;
 
-  BooleanSupplier loading, level2, level3;
+  BooleanSupplier loading, unStuck, level2, level3;
 
 
 
   ElevatorSubsystem elevatorSubsystem;
-  public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, BooleanSupplier loading, BooleanSupplier level2, BooleanSupplier level3) {
+  public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, BooleanSupplier loading, BooleanSupplier unStuck, BooleanSupplier level2, BooleanSupplier level3) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevatorSubsystem = elevatorSubsystem;
     this.loading = loading;
+    this.unStuck = unStuck;
     this.level2 = level2;
     this.level3 = level3;
     addRequirements(elevatorSubsystem);
@@ -41,6 +43,8 @@ public class ElevatorCommand extends Command {
   public void execute() {
     if(loading.getAsBoolean()){
       this.elevatorSubsystem.goToPosition(loadingHeight);
+    }else if(unStuck.getAsBoolean()){
+      this.elevatorSubsystem.goToPosition(unStuckHeight);
     }else if(level2.getAsBoolean()){
       this.elevatorSubsystem.goToPosition(level2Height);
     }else if(level3.getAsBoolean()){

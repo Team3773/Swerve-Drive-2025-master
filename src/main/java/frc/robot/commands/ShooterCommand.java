@@ -13,12 +13,13 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
     ShooterSubsystem shooterSubsystem;
-    BooleanSupplier bumperSupplier;
+    BooleanSupplier bumperSupplier, triggerSupplier;
     
-  public ShooterCommand(ShooterSubsystem shooterSubsystem, BooleanSupplier bumper ) {
+  public ShooterCommand(ShooterSubsystem shooterSubsystem, BooleanSupplier bumper, BooleanSupplier trigger) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
     this.bumperSupplier = bumper;
+    this.triggerSupplier = trigger;
     addRequirements(shooterSubsystem);
   }
 
@@ -29,7 +30,7 @@ public class ShooterCommand extends Command {
 // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.checkBeamAndControlMotor(this.bumperSupplier.getAsBoolean());
+    shooterSubsystem.checkBeamAndControlMotor(this.bumperSupplier.getAsBoolean(), this.triggerSupplier.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.

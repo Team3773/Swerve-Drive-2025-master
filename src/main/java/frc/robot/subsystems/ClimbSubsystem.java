@@ -43,12 +43,12 @@ public class ClimbSubsystem extends SubsystemBase {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // Set PID values for position control. We don't need to pass a closed loop
         // slot, as it will default to slot 0.
-        .p(0.1)
+        .p(8.0)
         .i(0)
         .d(0)
         .outputRange(-1, 1)
         // Set PID values for velocity control in slot 1
-        .p(0.0001, ClosedLoopSlot.kSlot1)
+        .p(8.0, ClosedLoopSlot.kSlot1)
         .i(0, ClosedLoopSlot.kSlot1)
         .d(0, ClosedLoopSlot.kSlot1)
         .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)

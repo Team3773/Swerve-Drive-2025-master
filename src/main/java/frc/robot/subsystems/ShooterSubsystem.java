@@ -24,30 +24,36 @@ public class ShooterSubsystem extends SubsystemBase {
         
         }
 
-         public void checkBeamAndControlMotor(boolean rightBumperPressed) {
+         public void checkBeamAndControlMotor(boolean rightBumperPressed, boolean rightTriggerPressed) {
          // Read the value from the sensor
         
          double motorSpeed = 0.5;
 
-         // Check if the beam is broken
          if (rightBumperPressed) {
-             // Stop the motor if the beam is broken
-             leftMotor.set(-0.5);
-             rightMotor.set(motorSpeed);
-             System.out.println("Right bumper pressed! Motor running." );
-         } else if (!beamBroken()) {
-             // Run the motors if the right bumper is pressed
-             leftMotor.set(-0.5);
-             rightMotor.set(motorSpeed);
-             System.out.println("Beam intact! Motor running.");
-         } else {
-             // Stop the motor if the right bumper is not pressed
-             leftMotor.set(0.0);
-             rightMotor.set(0.0);
-             System.out.println("Right bumper not pressed! Motor stopped.");
+            // Always run the motors when the right bumper is pressed
+            leftMotor.set(-motorSpeed);
+            rightMotor.set(motorSpeed);
+            System.out.println("Right bumper pressed! Motor running regardless of beam state.");
+        } else if (rightTriggerPressed) {
+            // Run motors when right trigger is pressed and beam is not broken
+            if (!beamBroken()) {
+                leftMotor.set(-motorSpeed);
+                rightMotor.set(motorSpeed);
+                System.out.println("Right trigger pressed and beam intact! Motor running.");
+            } else {
+                // Stop motors if the beam is broken
+                leftMotor.set(0.0);
+                rightMotor.set(0.0);
+                System.out.println("Right trigger pressed but beam broken! Motor stopped.");
+            }
+        } else {
+            // Stop motors if neither the right bumper nor the right trigger is pressed
+            leftMotor.set(0.0);
+            rightMotor.set(0.0);
+            System.out.println("Neither right bumper nor right trigger pressed! Motor stopped.");
+        }
 
-
-         }
+         
          System.out.println("Beam Break State "+ receiverInput.getValue());
 
     }

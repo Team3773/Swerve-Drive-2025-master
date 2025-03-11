@@ -11,8 +11,8 @@ import frc.robot.subsystems.ClimbSubsystem;
 public class ClimbCommand extends Command {
   BooleanSupplier button1,button2;
   ClimbSubsystem climbSubsystem;
-  double lowerPosition = -.1;
-  double climbPosition = .1;
+  double lowerPosition = -0.25;
+  double climbPosition = 0.25;
 
   public ClimbCommand(BooleanSupplier button1, BooleanSupplier button2, ClimbSubsystem climbSubsystem) {
     this.button1 = button1;

@@ -78,8 +78,8 @@ public class RobotContainer
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverXbox.getLeftY() * -1,
-                                                                () -> driverXbox.getLeftX() * -1)
+                                                                () -> driverXbox.getLeftY(),
+                                                                () -> driverXbox.getLeftX())
                                                             .withControllerRotationAxis(driverXbox::getRightX)
                                                             .deadband(OperatorConstants.RIGHT_X_DEADBAND)
                                                             .scaleTranslation(0.8)
@@ -208,11 +208,13 @@ public class RobotContainer
 
       coDriverXbox.povDown().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
       coDriverXbox.povUp().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
-      elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean()));
+      coDriverXbox.povLeft().onTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
+      coDriverXbox.povRight().onTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
+      elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.y().getAsBoolean(),() -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean()));
       climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(), climbSubsystem));
       coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
       coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
-      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,coDriverXbox.rightBumper()));
+      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, coDriverXbox.rightBumper()::getAsBoolean, coDriverXbox.rightTrigger()::getAsBoolean));
     
       // drivebase.setDefaultCommand(
       //     !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
@@ -231,12 +233,15 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(Commands.none());
       coDriverXbox.povDown().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
       coDriverXbox.povUp().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
-      elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean()));
+      coDriverXbox.povLeft().onTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
+      coDriverXbox.povRight().onTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
+      elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.y().getAsBoolean(), () -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean()));
       climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(), climbSubsystem));
       coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
       coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
 
-      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem,coDriverXbox.rightBumper()));
+      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, coDriverXbox.rightBumper()::getAsBoolean, coDriverXbox.rightTrigger()::getAsBoolean));
+
       // drivebase.setDefaultCommand(
       //     !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
     }
