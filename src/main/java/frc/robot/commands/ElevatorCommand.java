@@ -29,6 +29,7 @@ public class ElevatorCommand extends Command {
     this.unStuck = unStuck;
     this.level2 = level2;
     this.level3 = level3;
+    this.goToBottom = goToBottom;
     addRequirements(elevatorSubsystem);
   }
 
