@@ -24,21 +24,24 @@ public class ShooterSubsystem extends SubsystemBase {
         
         }
 
-         public void checkBeamAndControlMotor(boolean rightBumperPressed, boolean rightTriggerPressed) {
+         public void checkBeamAndControlMotor(boolean rightBumperPressed, boolean rightTriggerPressed, boolean SpeedIncrease) {
          // Read the value from the sensor
         
-         double motorSpeed = 0.5;
-
+         double leftmotorSpeed = 0.5;
+         double rightmotorSpeed = 0.5;
+         if(SpeedIncrease){
+            rightmotorSpeed = rightmotorSpeed * 2;
+         }
          if (rightBumperPressed) {
             // Always run the motors when the right bumper is pressed
-            leftMotor.set(-motorSpeed);
-            rightMotor.set(motorSpeed);
+            leftMotor.set(-leftmotorSpeed);
+            rightMotor.set(rightmotorSpeed);
             System.out.println("Right bumper pressed! Motor running regardless of beam state.");
         } else if (rightTriggerPressed) {
             // Run motors when right trigger is pressed and beam is not broken
             if (!beamBroken()) {
-                leftMotor.set(-motorSpeed);
-                rightMotor.set(motorSpeed);
+                leftMotor.set(-leftmotorSpeed);
+                rightMotor.set(rightmotorSpeed);
                 System.out.println("Right trigger pressed and beam intact! Motor running.");
             } else {
                 // Stop motors if the beam is broken

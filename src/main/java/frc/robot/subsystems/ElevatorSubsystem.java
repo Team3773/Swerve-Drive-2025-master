@@ -81,7 +81,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.setDefaultNumber("Elevator Target Velocity", 0);
 
         //Assume position is below the limit switch on startup
-        leftEncoder.setPosition(1.0);
+        leftEncoder.setPosition(0);
     }
 
     @Override
