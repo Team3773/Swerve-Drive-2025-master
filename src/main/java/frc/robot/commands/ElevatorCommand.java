@@ -36,7 +36,7 @@ public class ElevatorCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.elevatorSubsystem.goToPosition(0.0);
+    // this.elevatorSubsystem.goToPosition(0.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
