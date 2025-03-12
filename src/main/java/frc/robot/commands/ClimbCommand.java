@@ -12,7 +12,7 @@ public class ClimbCommand extends Command {
   BooleanSupplier button1,button2,button3;
   ClimbSubsystem climbSubsystem;
   double startPosition = 0.0;
-  double lowerPosition = -0.25;
+  double lowerPosition = -0.40;
   double climbPosition = 0.25;
 
   public ClimbCommand(BooleanSupplier button1, BooleanSupplier button2, BooleanSupplier button3, ClimbSubsystem climbSubsystem) {
