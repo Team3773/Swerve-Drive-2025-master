@@ -30,7 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
          double leftmotorSpeed = 0.5;
          double rightmotorSpeed = 0.5;
          if(SpeedIncrease){
-            rightmotorSpeed = rightmotorSpeed * 2;
+            rightmotorSpeed = rightmotorSpeed * 1.5;
          }
          if (rightBumperPressed) {
             // Always run the motors when the right bumper is pressed

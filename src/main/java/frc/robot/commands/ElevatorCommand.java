@@ -44,7 +44,7 @@ public class ElevatorCommand extends Command {
   public void execute() {
 
     if(goToBottom.getAsBoolean()){
-      this.elevatorSubsystem.goToPosition(-90);
+      this.elevatorSubsystem.goToPosition(-150);
     }
   
 
