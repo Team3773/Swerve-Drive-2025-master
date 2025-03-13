@@ -7,26 +7,28 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.drivebase.AbsoluteDriveAdv;
+import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.ShooterCommand;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -36,9 +38,16 @@ public class RobotContainer
   // private static final Command PathPlannerPath = null;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(OIConstants.kDriverControllerPort);
+  final CommandXboxController coDriverXbox = new CommandXboxController(OIConstants.kCoDriverControllerPort);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
+
+  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+  private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
+  private final ArmSubsystem armSubsystem = new ArmSubsystem();
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -61,8 +70,8 @@ public class RobotContainer
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverXbox.getLeftY() * -1,
-                                                                () -> driverXbox.getLeftX() * -1)
+                                                                () -> driverXbox.getLeftY(),
+                                                                () -> driverXbox.getLeftX())
                                                             .withControllerRotationAxis(driverXbox::getRightX)
                                                             .deadband(OperatorConstants.RIGHT_X_DEADBAND)
                                                             .scaleTranslation(0.8)
@@ -188,7 +197,17 @@ public class RobotContainer
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
       driverXbox.leftBumper().onTrue(Commands.none());
       driverXbox.rightBumper().onTrue(Commands.none());
-      // drivebase.setDefaultCommand(
+      coDriverXbox.povDown().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
+      coDriverXbox.povUp().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
+      coDriverXbox.povLeft().onTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
+      coDriverXbox.povRight().onTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
+      elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.y().getAsBoolean(),() -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean(), () -> coDriverXbox.leftBumper().getAsBoolean()));
+      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() -> coDriverXbox.leftBumper().getAsBoolean(), climbSubsystem));
+      // coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
+      // coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
+      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, coDriverXbox.rightBumper()::getAsBoolean, coDriverXbox.rightTrigger()::getAsBoolean, coDriverXbox.leftTrigger()::getAsBoolean));
+    
+      // drivebase.setDefaultCommand(       
       //     !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
     } else
     {
@@ -203,6 +222,15 @@ public class RobotContainer
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.rightBumper().onTrue(Commands.none());
+      coDriverXbox.povDown().onTrue(Commands.runOnce(elevator::decrementPosition, elevator));
+      coDriverXbox.povUp().onTrue(Commands.runOnce(elevator::incrementPosition, elevator));
+      coDriverXbox.povLeft().onTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
+      coDriverXbox.povRight().onTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
+      elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.y().getAsBoolean(), () -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean(), () -> coDriverXbox.leftBumper().getAsBoolean()));
+      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() ->coDriverXbox.leftBumper().getAsBoolean(), climbSubsystem));
+      // coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
+      // coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
+      shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, coDriverXbox.rightBumper()::getAsBoolean, coDriverXbox.rightTrigger()::getAsBoolean, coDriverXbox.leftTrigger()::getAsBoolean));
       // drivebase.setDefaultCommand(
       //     !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
     }

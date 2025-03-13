@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot
 
   public Robot()
   {
+    CameraServer.startAutomaticCapture();
     instance = this;
   }
 
@@ -38,6 +40,7 @@ public class Robot extends TimedRobot
   {
     return instance;
   }
+
 
   /**
    * This function is run when the robot is first started up and should be used for any initialization code.
