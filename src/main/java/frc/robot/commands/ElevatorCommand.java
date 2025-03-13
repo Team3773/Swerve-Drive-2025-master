@@ -17,30 +17,37 @@ public class ElevatorCommand extends Command {
   Double level2Height = 51.0;
   Double level3Height = 87.0;
 
-  BooleanSupplier loading, unStuck, level2, level3;
+  BooleanSupplier loading, unStuck, level2, level3, goToBottom;
 
 
 
   ElevatorSubsystem elevatorSubsystem;
-  public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, BooleanSupplier loading, BooleanSupplier unStuck, BooleanSupplier level2, BooleanSupplier level3) {
+  public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, BooleanSupplier loading, BooleanSupplier unStuck, BooleanSupplier level2, BooleanSupplier level3, BooleanSupplier goToBottom) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevatorSubsystem = elevatorSubsystem;
     this.loading = loading;
     this.unStuck = unStuck;
     this.level2 = level2;
     this.level3 = level3;
+    this.goToBottom = goToBottom;
     addRequirements(elevatorSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.elevatorSubsystem.goToPosition(0.0);
+    // this.elevatorSubsystem.goToPosition(0.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    if(goToBottom.getAsBoolean()){
+      this.elevatorSubsystem.goToPosition(-150);
+    }
+  
+
     if(loading.getAsBoolean()){
       this.elevatorSubsystem.goToPosition(loadingHeight);
     }else if(unStuck.getAsBoolean()){
