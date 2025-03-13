@@ -9,11 +9,11 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,20 +22,20 @@ import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
 
-  private SparkFlex motor;
-  private SparkFlexConfig motorConfig;
+  private SparkMax motor;
+  private SparkMaxConfig motorConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
 
   private double currentSetPoint = 0;
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
-    motor = new SparkFlex(Constants.ClimbConstants.CAN_ID, MotorType.kBrushless);
+    motor = new SparkMax(Constants.ClimbConstants.CAN_ID, MotorType.kBrushless);
     closedLoopController = motor.getClosedLoopController();
     encoder = motor.getEncoder();
 
-    SparkFlexConfig globalConfig = new SparkFlexConfig();
-    motorConfig = new SparkFlexConfig();
+    SparkMaxConfig globalConfig = new SparkMaxConfig();
+    motorConfig = new SparkMaxConfig();
 
     motorConfig.encoder
       .positionConversionFactor(1.0/324.0)
@@ -45,12 +45,12 @@ public class ClimbSubsystem extends SubsystemBase {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // Set PID values for position control. We don't need to pass a closed loop
         // slot, as it will default to slot 0.
-        .p(100.0)
+        .p(0)
         .i(0)
         .d(0)
         .outputRange(-1, 1)
         // Set PID values for velocity control in slot 1
-        .p(100.0, ClosedLoopSlot.kSlot1)
+        .p(0, ClosedLoopSlot.kSlot1)
         .i(0, ClosedLoopSlot.kSlot1)
         .d(0, ClosedLoopSlot.kSlot1)
         .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
