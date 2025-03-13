@@ -85,6 +85,7 @@ public final class Constants {
 
     public static final class ClimbConstants {
         public static final int CAN_ID = 16;
+        public static final int RATCHET_CAN_ID = 17;
         public static final double stepValue = 1e-4;
     }
 
