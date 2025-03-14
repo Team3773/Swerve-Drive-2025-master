@@ -11,9 +11,11 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,9 +24,9 @@ import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
 
-  private SparkFlex motor, ratchetMotor;
+  private SparkFlex motor;
+  private SparkMax ratchetMotor;
 
-  private SparkFlexConfig motorConfig, ratchetConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
 
@@ -33,14 +35,15 @@ public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
     motor = new SparkFlex(Constants.ClimbConstants.CAN_ID, MotorType.kBrushless);
-    ratchetMotor = new SparkFlex(Constants.ClimbConstants.RATCHET_CAN_ID, MotorType.kBrushless);
+    ratchetMotor = new SparkMax(Constants.ClimbConstants.RATCHET_CAN_ID, MotorType.kBrushless);
 
     closedLoopController = motor.getClosedLoopController();
     
     encoder = motor.getEncoder();
 
     SparkFlexConfig globalConfig = new SparkFlexConfig();
-    motorConfig = new SparkFlexConfig();
+    SparkMaxConfig ratchetConfig = new SparkMaxConfig();
+    SparkFlexConfig motorConfig = new SparkFlexConfig();
 
     motorConfig.encoder
       .positionConversionFactor(1.0/324.0)
@@ -62,12 +65,17 @@ public class ClimbSubsystem extends SubsystemBase {
         .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
 
 
+    ratchetConfig
+            .smartCurrentLimit(50)
+            .idleMode(IdleMode.kBrake);
     globalConfig
             .smartCurrentLimit(50)
             .idleMode(IdleMode.kBrake);
             
     motorConfig.apply(globalConfig);
-    ratchetConfig.apply(globalConfig);
+    ratchetConfig.apply(ratchetConfig);
+    
+    ratchetMotor.configure(ratchetConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
       
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
