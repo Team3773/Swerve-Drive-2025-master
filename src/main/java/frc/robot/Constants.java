@@ -1,11 +1,8 @@
 package frc.robot;
 
-import java.util.spi.CurrencyNameProvider;
-
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -84,6 +81,7 @@ public final class Constants {
     }
 
     public static final class ClimbConstants {
+        public static final int RATCHET_ID = 50;
         public static final int CAN_ID = 16;
         public static final int RATCHET_CAN_ID = 17;
         public static final double stepValue = 1e-4;

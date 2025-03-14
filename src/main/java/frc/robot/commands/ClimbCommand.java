@@ -3,22 +3,25 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimbSubsystem;
 
 public class ClimbCommand extends Command {
-  BooleanSupplier button1,button2,button3;
+  BooleanSupplier button1, button2, button3, ratchetButton;
   ClimbSubsystem climbSubsystem;
   double startPosition = 0.0;
   double lowerPosition = -0.1;
   double climbPosition = 0.1;
 
-  public ClimbCommand(BooleanSupplier button1, BooleanSupplier button2, BooleanSupplier button3, ClimbSubsystem climbSubsystem) {
+  public ClimbCommand(BooleanSupplier button1, BooleanSupplier button2, BooleanSupplier button3,
+      BooleanSupplier ratchetButton, ClimbSubsystem climbSubsystem) {
     this.button1 = button1;
     this.button2 = button2;
     this.button3 = button3;
+    this.ratchetButton = ratchetButton;
     this.climbSubsystem = climbSubsystem;
     addRequirements(climbSubsystem);
   }
@@ -33,14 +36,20 @@ public class ClimbCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(button1.getAsBoolean()){
-      //Go to resting position
+    if (button1.getAsBoolean()) {
+      // Go to resting position
       this.climbSubsystem.goToPosition(lowerPosition);
-    }else if (button2.getAsBoolean()) {
-       //Go to Climb Position
-       this.climbSubsystem.goToPosition(climbPosition);
-    }else if (button3.getAsBoolean()) {
+    } else if (button2.getAsBoolean()) {
+      // Go to Climb Position
+      this.climbSubsystem.goToPosition(climbPosition);
+    } else if (button3.getAsBoolean()) {
       this.climbSubsystem.goToPosition(startPosition);
+    }
+
+    if (ratchetButton.getAsBoolean()) {
+      this.climbSubsystem.runRatchet();
+    } else {
+      this.climbSubsystem.stopRatchet();
     }
   }
 

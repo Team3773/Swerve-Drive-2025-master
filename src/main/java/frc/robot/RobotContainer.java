@@ -202,7 +202,7 @@ public class RobotContainer
       coDriverXbox.povLeft().onTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
       coDriverXbox.povRight().onTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
       elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.y().getAsBoolean(),() -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean(), () -> coDriverXbox.leftBumper().getAsBoolean()));
-      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() -> coDriverXbox.leftBumper().getAsBoolean(), climbSubsystem));
+      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() -> coDriverXbox.leftBumper().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(), climbSubsystem));
       // coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
       // coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
       shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, coDriverXbox.rightBumper()::getAsBoolean, coDriverXbox.rightTrigger()::getAsBoolean, coDriverXbox.leftTrigger()::getAsBoolean));
@@ -227,7 +227,7 @@ public class RobotContainer
       coDriverXbox.povLeft().onTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
       coDriverXbox.povRight().onTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
       elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.y().getAsBoolean(), () -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean(), () -> coDriverXbox.leftBumper().getAsBoolean()));
-      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() ->coDriverXbox.leftBumper().getAsBoolean(), climbSubsystem));
+      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() ->coDriverXbox.leftBumper().getAsBoolean(), () -> coDriverXbox.start().getAsBoolean(), climbSubsystem));
       // coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
       // coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
       shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, coDriverXbox.rightBumper()::getAsBoolean, coDriverXbox.rightTrigger()::getAsBoolean, coDriverXbox.leftTrigger()::getAsBoolean));

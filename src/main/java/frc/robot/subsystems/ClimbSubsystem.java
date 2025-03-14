@@ -22,16 +22,21 @@ import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
 
-  private SparkFlex motor;
-  private SparkFlexConfig motorConfig;
+  private SparkFlex motor, ratchetMotor;
+
+  private SparkFlexConfig motorConfig, ratchetConfig;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
 
   private double currentSetPoint = 0;
+  private double ratchetMotorSpeed = 0.2;
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
     motor = new SparkFlex(Constants.ClimbConstants.CAN_ID, MotorType.kBrushless);
+    ratchetMotor = new SparkFlex(Constants.ClimbConstants.RATCHET_CAN_ID, MotorType.kBrushless);
+
     closedLoopController = motor.getClosedLoopController();
+    
     encoder = motor.getEncoder();
 
     SparkFlexConfig globalConfig = new SparkFlexConfig();
@@ -62,6 +67,7 @@ public class ClimbSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake);
             
     motorConfig.apply(globalConfig);
+    ratchetConfig.apply(globalConfig);
       
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
@@ -79,6 +85,13 @@ public class ClimbSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Climb setPoint", currentSetPoint);
     SmartDashboard.putNumber("Climb Encoder Position", getCurrentPosition());
     SmartDashboard.putNumber("Climb Velocity", encoder.getVelocity());
+  }
+  
+  public void runRatchet(){
+   ratchetMotor.set(ratchetMotorSpeed);
+  }
+  public void stopRatchet(){
+    ratchetMotor.set(0.0);
   }
 
   public void resetEncoder(){
@@ -106,5 +119,6 @@ public class ClimbSubsystem extends SubsystemBase {
   public void stop() {
     var speed = 0;
     motor.set(speed);
+    ratchetMotor.set(speed);
   }
 }
