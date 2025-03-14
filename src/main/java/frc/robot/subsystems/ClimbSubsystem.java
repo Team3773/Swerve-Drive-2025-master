@@ -31,7 +31,7 @@ public class ClimbSubsystem extends SubsystemBase {
   private RelativeEncoder encoder;
 
   private double currentSetPoint = 0;
-  private double ratchetMotorSpeed = 0.2;
+  private double ratchetMotorSpeed = 1.0;
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
     motor = new SparkFlex(Constants.ClimbConstants.CAN_ID, MotorType.kBrushless);
@@ -53,12 +53,12 @@ public class ClimbSubsystem extends SubsystemBase {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // Set PID values for position control. We don't need to pass a closed loop
         // slot, as it will default to slot 0.
-        .p(0)
+        .p(100)
         .i(0)
         .d(0)
         .outputRange(-1, 1)
         // Set PID values for velocity control in slot 1
-        .p(0, ClosedLoopSlot.kSlot1)
+        .p(100, ClosedLoopSlot.kSlot1)
         .i(0, ClosedLoopSlot.kSlot1)
         .d(0, ClosedLoopSlot.kSlot1)
         .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
@@ -100,6 +100,10 @@ public class ClimbSubsystem extends SubsystemBase {
   }
   public void stopRatchet(){
     ratchetMotor.set(0.0);
+  }
+
+  public void releaseRatchet(){
+    ratchetMotor.set(-ratchetMotorSpeed);
   }
 
   public void resetEncoder(){

@@ -202,7 +202,7 @@ public class RobotContainer
       coDriverXbox.povLeft().onTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
       coDriverXbox.povRight().onTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
       elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.y().getAsBoolean(),() -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean(), () -> coDriverXbox.leftBumper().getAsBoolean()));
-      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() -> coDriverXbox.leftBumper().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(), climbSubsystem));
+      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() -> coDriverXbox.leftBumper().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(), () -> driverXbox.y().getAsBoolean(), climbSubsystem));
       // coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
       // coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
       shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, coDriverXbox.rightBumper()::getAsBoolean, coDriverXbox.rightTrigger()::getAsBoolean, coDriverXbox.leftTrigger()::getAsBoolean));
@@ -227,7 +227,7 @@ public class RobotContainer
       coDriverXbox.povLeft().onTrue(Commands.runOnce(climbSubsystem::decrementPosition, climbSubsystem));
       coDriverXbox.povRight().onTrue(Commands.runOnce(climbSubsystem::incrementPosition, climbSubsystem));
       elevator.setDefaultCommand(new ElevatorCommand(elevator,() -> coDriverXbox.a().getAsBoolean(),() -> coDriverXbox.y().getAsBoolean(), () -> coDriverXbox.b().getAsBoolean(), () -> coDriverXbox.x().getAsBoolean(), () -> coDriverXbox.leftBumper().getAsBoolean()));
-      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> coDriverXbox.back().getAsBoolean(),() -> coDriverXbox.start().getAsBoolean(),() ->coDriverXbox.leftBumper().getAsBoolean(), () -> coDriverXbox.start().getAsBoolean(), climbSubsystem));
+      climbSubsystem.setDefaultCommand(new ClimbCommand(() -> driverXbox.back().getAsBoolean(),() -> driverXbox.start().getAsBoolean(),() -> driverXbox.povUp().getAsBoolean(), () -> driverXbox.y().getAsBoolean(), () -> driverXbox.povDown().getAsBoolean(), climbSubsystem));
       // coDriverXbox.leftTrigger().whileTrue(Commands.runOnce(armSubsystem::incrementPosition, armSubsystem));
       // coDriverXbox.leftBumper().whileTrue(Commands.runOnce(armSubsystem::decrementPosition, armSubsystem));
       shooterSubsystem.setDefaultCommand(new ShooterCommand(shooterSubsystem, coDriverXbox.rightBumper()::getAsBoolean, coDriverXbox.rightTrigger()::getAsBoolean, coDriverXbox.leftTrigger()::getAsBoolean));
@@ -245,8 +245,9 @@ public class RobotContainer
   public Command getAutonomousCommand(){
     // An example command will be run in autonomous
     try{
-     PathPlannerPath path = PathPlannerPath.fromPathFile("Test Path 1");
-     return AutoBuilder.followPath(path);
+     //PathPlannerPath path = PathPlannerPath.fromPathFile("Test Path 1");
+     //return AutoBuilder.followPath(path);
+     return Commands.none();
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
