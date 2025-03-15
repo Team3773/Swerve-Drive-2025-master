@@ -5,6 +5,7 @@ import java.io.File;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -245,9 +246,10 @@ public class RobotContainer
   public Command getAutonomousCommand(){
     // An example command will be run in autonomous
     try{
-     //PathPlannerPath path = PathPlannerPath.fromPathFile("Test Path 1");
+     //PathPlannerPath path = PathPlannerPath.fromPathFile("TestPath");
      //return AutoBuilder.followPath(path);
-     return Commands.none();
+     return new PathPlannerAuto("TestAuto");
+     //return Commands.none();
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();

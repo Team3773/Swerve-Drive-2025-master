@@ -14,8 +14,8 @@ public class ElevatorCommand extends Command {
   /** Creates a new ElevatorCommand. */
   Double loadingHeight = 21.0;
   Double unStuckHeight = 26.0;
-  Double level2Height = 51.0;
-  Double level3Height = 87.0;
+  Double level2Height = 48.5;
+  Double level3Height = 84.5;
 
   BooleanSupplier loading, unStuck, level2, level3, goToBottom;
 

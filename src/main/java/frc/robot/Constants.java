@@ -47,7 +47,7 @@ public final class Constants {
         public static final int kDrivePPR = 42;
         public static final int kTurningEncoderCPR = 4096;
         public static final int kTurningEncoderPPR = kTurningEncoderCPR /4;
-        public static final double kmaxSpeed = 2.5;
+        public static final double kmaxSpeed = 2.5; //Already fast enough, DO NOT INCREASE
         public static final double kWheelCOF = .5; //This needs to be updated with an accurate coefficient of friction for the wheels
         public static final double currentLimit = 0.1; //Update this with an accurate current limit.
         //How many motors and which type of motor are being used?
