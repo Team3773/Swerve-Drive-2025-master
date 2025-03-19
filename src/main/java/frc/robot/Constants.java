@@ -1,11 +1,8 @@
 package frc.robot;
 
-import java.util.spi.CurrencyNameProvider;
-
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -50,7 +47,7 @@ public final class Constants {
         public static final int kDrivePPR = 42;
         public static final int kTurningEncoderCPR = 4096;
         public static final int kTurningEncoderPPR = kTurningEncoderCPR /4;
-        public static final double kmaxSpeed = 1.5;
+        public static final double kmaxSpeed = 2.5; //Already fast enough, DO NOT INCREASE
         public static final double kWheelCOF = .5; //This needs to be updated with an accurate coefficient of friction for the wheels
         public static final double currentLimit = 0.1; //Update this with an accurate current limit.
         //How many motors and which type of motor are being used?
@@ -84,8 +81,9 @@ public final class Constants {
     }
 
     public static final class ClimbConstants {
+        public static final int RATCHET_ID = 50;
         public static final int CAN_ID = 16;
-        public static final int RATCHET_CAN_ID = 17;
+        public static final int RATCHET_CAN_ID = 21;
         public static final double stepValue = 1e-4;
     }
 

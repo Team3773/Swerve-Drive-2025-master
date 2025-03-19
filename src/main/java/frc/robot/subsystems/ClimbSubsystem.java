@@ -11,9 +11,11 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,19 +25,25 @@ import frc.robot.Constants;
 public class ClimbSubsystem extends SubsystemBase {
 
   private SparkFlex motor;
-  private SparkFlexConfig motorConfig;
+  private SparkMax ratchetMotor;
+
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
 
   private double currentSetPoint = 0;
+  private double ratchetMotorSpeed = 1.0;
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
     motor = new SparkFlex(Constants.ClimbConstants.CAN_ID, MotorType.kBrushless);
+    ratchetMotor = new SparkMax(Constants.ClimbConstants.RATCHET_CAN_ID, MotorType.kBrushless);
+
     closedLoopController = motor.getClosedLoopController();
+    
     encoder = motor.getEncoder();
 
     SparkFlexConfig globalConfig = new SparkFlexConfig();
-    motorConfig = new SparkFlexConfig();
+    SparkMaxConfig ratchetConfig = new SparkMaxConfig();
+    SparkFlexConfig motorConfig = new SparkFlexConfig();
 
     motorConfig.encoder
       .positionConversionFactor(1.0/324.0)
@@ -45,23 +53,29 @@ public class ClimbSubsystem extends SubsystemBase {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // Set PID values for position control. We don't need to pass a closed loop
         // slot, as it will default to slot 0.
-        .p(0)
+        .p(100)
         .i(0)
         .d(0)
         .outputRange(-1, 1)
         // Set PID values for velocity control in slot 1
-        .p(0, ClosedLoopSlot.kSlot1)
+        .p(100, ClosedLoopSlot.kSlot1)
         .i(0, ClosedLoopSlot.kSlot1)
         .d(0, ClosedLoopSlot.kSlot1)
         .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
         .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
 
 
+    ratchetConfig
+            .smartCurrentLimit(50)
+            .idleMode(IdleMode.kBrake);
     globalConfig
             .smartCurrentLimit(50)
             .idleMode(IdleMode.kBrake);
             
     motorConfig.apply(globalConfig);
+    ratchetConfig.apply(ratchetConfig);
+    
+    ratchetMotor.configure(ratchetConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
       
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
@@ -79,6 +93,17 @@ public class ClimbSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Climb setPoint", currentSetPoint);
     SmartDashboard.putNumber("Climb Encoder Position", getCurrentPosition());
     SmartDashboard.putNumber("Climb Velocity", encoder.getVelocity());
+  }
+  
+  public void runRatchet(){
+   ratchetMotor.set(ratchetMotorSpeed);
+  }
+  public void stopRatchet(){
+    ratchetMotor.set(0.0);
+  }
+
+  public void releaseRatchet(){
+    ratchetMotor.set(-ratchetMotorSpeed);
   }
 
   public void resetEncoder(){
@@ -106,5 +131,6 @@ public class ClimbSubsystem extends SubsystemBase {
   public void stop() {
     var speed = 0;
     motor.set(speed);
+    ratchetMotor.set(speed);
   }
 }
