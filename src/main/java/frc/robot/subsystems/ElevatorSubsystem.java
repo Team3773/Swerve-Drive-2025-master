@@ -81,7 +81,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.setDefaultNumber("Elevator Target Velocity", 0);
 
         //Assume position is below the limit switch on startup
-        leftEncoder.setPosition(0);
+        // leftEncoder.setPosition(0);
     }
 
     @Override
@@ -139,6 +139,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void goToPosition(double value) {
         currentSetPoint = value;
         leftClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+    }
+
+    public void runMotors(double speed){
+        leftMotor.set(speed);
     }
 
     public double getCurrentPosition() {
