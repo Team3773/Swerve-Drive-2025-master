@@ -30,7 +30,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final RelativeEncoder leftEncoder;
     // private final RelativeEncoder rightEncoder;
     private DigitalInput resetlimitSwitch;
-    private DigitalInput toplimitSwitch;
+    // private DigitalInput toplimitSwitch;
 
     private double currentSetPoint = 0;
 
@@ -48,7 +48,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         SparkFlexConfig followerConfig = new SparkFlexConfig();
 
         resetlimitSwitch = new DigitalInput(Constants.ElevatorConstants.RESET_LIMIT_PORT);
-        toplimitSwitch = new DigitalInput(Constants.ElevatorConstants.TOP_LIMIT_PORT);
+        // toplimitSwitch = new DigitalInput(Constants.ElevatorConstants.TOP_LIMIT_PORT);
 
         leaderConfig.encoder
                 .positionConversionFactor(1)
@@ -102,11 +102,11 @@ public class ElevatorSubsystem extends SubsystemBase {
               this.stop();
           }
         }
-        if (isTopLimitSwitchPressed()) {
-            if(this.currentSetPoint >= this.getCurrentPosition()){
-                this.stop();
-            }
-        }
+        // if (isTopLimitSwitchPressed()) {
+        //     if(this.currentSetPoint >= this.getCurrentPosition()){
+        //         this.stop();
+        //     }
+        // }
     }
 
     // Define the method only once
@@ -114,19 +114,19 @@ public class ElevatorSubsystem extends SubsystemBase {
         return resetlimitSwitch.get(); // Assuming limit switch is normally closed
     }
 
-    public boolean isTopLimitSwitchPressed() {
-        return toplimitSwitch.get(); // Assuming it's normally closed
-    }
+    // public boolean isTopLimitSwitchPressed() {
+    //     return toplimitSwitch.get(); // Assuming it's normally closed
+    // }
 
     public void resetEncoder() {
         leftEncoder.setPosition(0);
     }
 
     public void incrementPosition() {
-        if (isTopLimitSwitchPressed()) {
-            stop(); // Prevent further movement
-            return;
-        }
+        // if (isTopLimitSwitchPressed()) {
+        //     stop(); // Prevent further movement
+        //     return;
+        // }
         currentSetPoint += Constants.ElevatorConstants.stepValue;
         goToPosition(currentSetPoint);
     }
