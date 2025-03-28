@@ -104,7 +104,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
         if (isTopLimitSwitchPressed()) {
             if(this.currentSetPoint >= this.getCurrentPosition()){
-                this.stop();
+                //this.stop();
             }
         }
     }
