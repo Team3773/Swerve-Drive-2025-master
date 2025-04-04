@@ -9,6 +9,12 @@
           "data": {
             "pathName": "PathThatDoesAlmostNothing"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "score"
+          }
         }
       ]
     }

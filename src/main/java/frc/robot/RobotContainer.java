@@ -22,6 +22,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
@@ -151,8 +152,7 @@ public class RobotContainer
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-  }
-
+    NamedCommands.registerCommand("score", Commands.runOnce(goToPosition(troughHeight));
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
@@ -255,7 +255,6 @@ public class RobotContainer
         return Commands.none();
     }
   }
-
 
   public void setDriveMode()
   {
