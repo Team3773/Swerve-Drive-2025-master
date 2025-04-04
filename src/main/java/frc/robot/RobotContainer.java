@@ -46,6 +46,7 @@ public class RobotContainer
                                                                          "swerve"));
 
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+  private final Command raiseElevatorCommand = new RaiseElevatorCommand(elevator, 21.0);
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
@@ -152,7 +153,8 @@ public class RobotContainer
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-    NamedCommands.registerCommand("score", Commands.runOnce(goToPosition(troughHeight));
+    NamedCommands.registerCommand("score", raiseElevatorCommand);
+  }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
