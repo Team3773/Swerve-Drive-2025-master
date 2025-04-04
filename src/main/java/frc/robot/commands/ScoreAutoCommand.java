@@ -14,6 +14,9 @@ public class ScoreAutoCommand extends SequentialCommandGroup {
   public ScoreAutoCommand() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands();
+    addCommands(
+      new RaiseElevatorCommand(null, null),
+
+      new ShooterAutoCommand());
   }
 }
