@@ -36,8 +36,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     /** Creates a new ElevatorSubsystem. */
     public ElevatorSubsystem() {
-        leftMotor = new SparkFlex(Constants.ElevatorConstants.LEFT_CAN_ID, MotorType.kBrushless);
-        rightMotor = new SparkFlex(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
+        leftMotor = new SparkFlex(Constants.Elevator.LEFT_CAN_ID, MotorType.kBrushless);
+        rightMotor = new SparkFlex(Constants.Elevator.RIGHT_CAN_ID, MotorType.kBrushless);
         leftClosedLoopController = leftMotor.getClosedLoopController();
         // rightClosedLoopController = rightMotor.getClosedLoopController();
         leftEncoder = leftMotor.getEncoder();
@@ -47,8 +47,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         SparkFlexConfig leaderConfig = new SparkFlexConfig();
         SparkFlexConfig followerConfig = new SparkFlexConfig();
 
-        resetlimitSwitch = new DigitalInput(Constants.ElevatorConstants.RESET_LIMIT_PORT);
-        toplimitSwitch = new DigitalInput(Constants.ElevatorConstants.TOP_LIMIT_PORT);
+        resetlimitSwitch = new DigitalInput(Constants.Elevator.RESET_LIMIT_PORT);
+        toplimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_PORT);
 
         leaderConfig.encoder
                 .positionConversionFactor(1)
@@ -127,12 +127,12 @@ public class ElevatorSubsystem extends SubsystemBase {
             stop(); // Prevent further movement
             return;
         }
-        currentSetPoint += Constants.ElevatorConstants.stepValue;
+        currentSetPoint += Constants.Elevator.stepValue;
         goToPosition(currentSetPoint);
     }
 
     public void decrementPosition() {
-        currentSetPoint -= Constants.ElevatorConstants.stepValue;
+        currentSetPoint -= Constants.Elevator.stepValue;
         goToPosition(currentSetPoint);
     }
 
@@ -147,5 +147,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void stop() {
         leftMotor.set(0);
+    }
+
+    public boolean isAtHeight(double Height){
+        if(getCurrentPosition() >= Height -0.1 || getCurrentPosition() <= Height + 0.1 ){
+            return true;
+        }
+        return false;
     }
 }

@@ -61,12 +61,19 @@ public final class Constants {
         public static final int kCoDriverControllerPort = 1;
     }
 
-    public static final class ElevatorConstants {
+    public static final class Elevator {
         public static final int RIGHT_CAN_ID = 1;
         public static final int LEFT_CAN_ID = 2;
         public static final int stepValue = 5;
         public static final int RESET_LIMIT_PORT = 2;
         public static final int TOP_LIMIT_PORT = 3;
+
+        public static final class Height {
+            public static Double loadingHeight = 21.0;
+            public static Double unStuckHeight = 26.0;
+            public static Double level2Height = 48.5;
+            public static Double level3Height = 84.5;
+        }
     }
 
     public static final class ArmConstants {
@@ -90,5 +97,7 @@ public final class Constants {
     public static final class AlgaeIntakeSubystemConstants {
         public static final int CAN_ID = 6;
     }
+
+
 
 }

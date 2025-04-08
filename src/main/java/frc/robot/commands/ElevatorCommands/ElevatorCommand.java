@@ -7,19 +7,14 @@ package frc.robot.commands.ElevatorCommands;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorCommand extends Command {
   /** Creates a new ElevatorCommand. */
-  Double loadingHeight = 21.0;
-  Double unStuckHeight = 26.0;
-  Double level2Height = 48.5;
-  Double level3Height = 84.5;
 
   BooleanSupplier loading, unStuck, level2, level3, goToBottom;
-
-
 
   ElevatorSubsystem elevatorSubsystem;
   public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, BooleanSupplier loading, BooleanSupplier unStuck, BooleanSupplier level2, BooleanSupplier level3, BooleanSupplier goToBottom) {
@@ -46,16 +41,14 @@ public class ElevatorCommand extends Command {
     if(goToBottom.getAsBoolean()){
       this.elevatorSubsystem.goToPosition(-150);
     }
-  
-
     if(loading.getAsBoolean()){
-      this.elevatorSubsystem.goToPosition(loadingHeight);
+      this.elevatorSubsystem.goToPosition(Constants.Elevator.Height.loadingHeight);
     }else if(unStuck.getAsBoolean()){
-      this.elevatorSubsystem.goToPosition(unStuckHeight);
+      this.elevatorSubsystem.goToPosition(Constants.Elevator.Height.unStuckHeight);
     }else if(level2.getAsBoolean()){
-      this.elevatorSubsystem.goToPosition(level2Height);
+      this.elevatorSubsystem.goToPosition(Constants.Elevator.Height.level2Height);
     }else if(level3.getAsBoolean()){
-      this.elevatorSubsystem.goToPosition(level3Height);
+      this.elevatorSubsystem.goToPosition(Constants.Elevator.Height.level3Height);
     }
   }
 

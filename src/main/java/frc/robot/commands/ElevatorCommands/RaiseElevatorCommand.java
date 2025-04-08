@@ -11,19 +11,39 @@ import frc.robot.subsystems.ElevatorSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class RaiseElevatorCommand extends InstantCommand {
-  Double troughHeight = 21.0;
+  Double requestedHeight;
 
   ElevatorSubsystem elevatorSubsystem;
-  public RaiseElevatorCommand(ElevatorSubsystem elevatorSubsystem, Double troughHeight) {
+  public RaiseElevatorCommand(ElevatorSubsystem elevatorSubsystem, Double requestedHeight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevatorSubsystem = elevatorSubsystem;
-    this.troughHeight = troughHeight;
+    this.requestedHeight = requestedHeight;
     addRequirements(elevatorSubsystem);
   }
+
+
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevatorSubsystem.goToPosition(troughHeight);
+    
+    this.elevatorSubsystem.goToPosition(this.requestedHeight);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    this.elevatorSubsystem.stop();
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return this.elevatorSubsystem.isAtHeight(requestedHeight);
   }
 }

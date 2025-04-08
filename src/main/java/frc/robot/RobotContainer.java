@@ -3,10 +3,8 @@ package frc.robot;
 
 import java.io.File;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -46,7 +44,7 @@ public class RobotContainer
                                                                          "swerve"));
 
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
-  private final Command raiseElevatorCommand = new RaiseElevatorCommand(elevator, 21.0);
+  private final Command raiseElevatorCommand = new RaiseElevatorCommand(elevator, Constants.Elevator.Height.loadingHeight);
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
