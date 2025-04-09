@@ -69,10 +69,10 @@ public final class Constants {
         public static final int TOP_LIMIT_PORT = 3;
 
         public static final class Height {
-            public static Double loadingHeight = 21.0;
+            public static Double loadingHeight = 21.5;
             public static Double unStuckHeight = 26.0;
-            public static Double level2Height = 48.5;
-            public static Double level3Height = 84.5;
+            public static Double level2Height = 50.5;
+            public static Double level3Height = 85.5;
         }
     }
 

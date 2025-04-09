@@ -33,6 +33,7 @@ public class RaiseElevatorCommand extends InstantCommand {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    this.elevatorSubsystem.goToPosition(this.requestedHeight);
   }
 
   // Called once the command ends or is interrupted.
