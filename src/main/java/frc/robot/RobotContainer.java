@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ScoreAutoCommand;
 import frc.robot.commands.ClimbCommands.ClimbCommand;
 import frc.robot.commands.ElevatorCommands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommands.RaiseElevatorCommand;
@@ -151,7 +152,8 @@ public class RobotContainer
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-    NamedCommands.registerCommand("score", raiseElevatorCommand);
+    NamedCommands.registerCommand("score with elevator", raiseElevatorCommand);
+    NamedCommands.registerCommand(score, ScoreAutoCommand);
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

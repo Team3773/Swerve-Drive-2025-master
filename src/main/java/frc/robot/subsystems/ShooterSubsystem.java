@@ -24,6 +24,14 @@ public class ShooterSubsystem extends SubsystemBase {
         
         }
 
+        public void setLeftMotorSpeed(double speed) {
+            leftMotor.set(speed);
+        }
+        
+        public void setRightMotorSpeed(double speed) {
+            rightMotor.set(speed);
+        }
+        
          public void checkBeamAndControlMotor(boolean rightBumperPressed, boolean rightTriggerPressed, boolean SpeedIncrease) {
          // Read the value from the sensor
         
