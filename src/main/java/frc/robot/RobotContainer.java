@@ -29,6 +29,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import swervelib.SwerveInputStream;
 
 
@@ -266,7 +267,15 @@ public class RobotContainer
   {
     drivebase.setMotorBrake(brake);
   }
+
+
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+
+    public VisionSubsystem getVisionSubsystem() {
+        return visionSubsystem;
+    }
 }
+
 
 // public Command getAutonomousCommand() {
 // // 1. Create trajectory settings
