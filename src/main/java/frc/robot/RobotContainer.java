@@ -22,14 +22,15 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 import swervelib.SwerveInputStream;
 
 
@@ -50,6 +51,9 @@ public class RobotContainer
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
   private final ArmSubsystem armSubsystem = new ArmSubsystem();
+  private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
+  private final FollowAprilTagCommand followAprilTagCommand = new FollowAprilTagCommand(drivebase, limelightSubsystem);
+
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -246,17 +250,14 @@ public class RobotContainer
    */
   public Command getAutonomousCommand(){
     // An example command will be run in autonomous
-    try{
-     //PathPlannerPath path = PathPlannerPath.fromPathFile("TestPath");
-     //return AutoBuilder.followPath(path);
-     return new PathPlannerAuto("TestAuto");
-     //return Commands.none();
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
-    }
-  }
-
+  //  try{
+     return followAprilTagCommand;
+   //  return new PathPlannerAuto("TestAuto");
+  //  } catch (Exception e) {
+     //   DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+      //  return Commands.none();
+   // }
+} 
 
   public void setDriveMode()
   {
@@ -267,16 +268,7 @@ public class RobotContainer
   {
     drivebase.setMotorBrake(brake);
   }
-
-
-    private final VisionSubsystem visionSubsystem = new VisionSubsystem();
-
-    public VisionSubsystem getVisionSubsystem() {
-        return visionSubsystem;
-    }
 }
-
-
 // public Command getAutonomousCommand() {
 // // 1. Create trajectory settings
 // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
