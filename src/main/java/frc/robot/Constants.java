@@ -59,7 +59,12 @@ public final class Constants {
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
         public static final int kCoDriverControllerPort = 1;
+        public static final int kRetroPieControllerPort = 2;
+
+        // Button IDs for the RetroPie controller
+        public static final int kRetroPieButtonk1 = 1;
     }
+
 
     public static final class ElevatorConstants {
         public static final int RIGHT_CAN_ID = 1;
