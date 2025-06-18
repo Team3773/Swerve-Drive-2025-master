@@ -15,7 +15,7 @@ public class FollowAprilTagCommand extends Command {
 
     private final double kPForward = 0.5;
     private final double kPRotate = 0.03;
-    private final double targetDistance = 0.20; // meters
+    private final double targetDistance = 5; // meters
 
     public FollowAprilTagCommand(SwerveSubsystem swerveSubsystem, LimelightSubsystem limelightSubsystem) {
         this.swerveSubsystem = swerveSubsystem;
