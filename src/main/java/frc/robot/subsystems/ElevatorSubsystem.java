@@ -148,4 +148,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void stop() {
         leftMotor.set(0);
     }
+
+    public boolean isAtHeight(Double requestedHeight) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isAtHeight'");
+    }
 }
