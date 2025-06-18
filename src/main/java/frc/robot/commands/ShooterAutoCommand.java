@@ -11,8 +11,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShooterAutoCommand extends InstantCommand {
-  Double leftmotorSpeed = 0.5;
-  Double rightmotorSpeed = 1.5;
+  double leftmotorSpeed = 0.5;
+  double rightmotorSpeed = 1.5;
 
   ShooterSubsystem shooterSubsystem;
 

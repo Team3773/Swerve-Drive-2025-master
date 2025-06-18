@@ -257,13 +257,13 @@ public class RobotContainer
    */
   public Command getAutonomousCommand(){
     // An example command will be run in autonomous
-  //  try{
-     return followAprilTagCommand;
-   //  return new PathPlannerAuto("TestAuto");
-  //  } catch (Exception e) {
-     //   DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-      //  return Commands.none();
-   // }
+  try{
+     //return followAprilTagCommand;
+   return new PathPlannerAuto("TestAuto");
+    } catch (Exception e) {
+       DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+       return Commands.none();
+    }
 } 
 
   public void setDriveMode()
