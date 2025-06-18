@@ -24,6 +24,7 @@ import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.commands.RaiseElevatorCommand;
+import frc.robot.commands.ShooterAutoCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
@@ -55,6 +56,7 @@ public class RobotContainer
   private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
   private final FollowAprilTagCommand followAprilTagCommand = new FollowAprilTagCommand(drivebase, limelightSubsystem);
   private final RaiseElevatorCommand raiseElevatorCommand = new RaiseElevatorCommand(elevator, 21.15);
+  private final ShooterAutoCommand shooterAutoCommand = new ShooterAutoCommand(shooterSubsystem);
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -160,6 +162,7 @@ public class RobotContainer
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
     NamedCommands.registerCommand("dectectApril", followAprilTagCommand);
     NamedCommands.registerCommand("elevator", raiseElevatorCommand);
+    NamedCommands.registerCommand("shoot", shooterAutoCommand);
   }
 
   /**

@@ -71,4 +71,14 @@ public class ShooterSubsystem extends SubsystemBase {
         leftMotor.set(adjustedSpeed);
         rightMotor.set(adjustedSpeed);
     }
+
+    public void setLeftMotorSpeed(double d) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setLeftMotorSpeed'");
+    }
+
+    public void setRightMotorSpeed(Double rightmotorSpeed) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setRightMotorSpeed'");
+    }
 }
