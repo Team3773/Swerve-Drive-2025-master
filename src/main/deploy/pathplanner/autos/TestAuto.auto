@@ -9,6 +9,24 @@
           "data": {
             "pathName": "PathThatDoesAlmostNothing"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "detectApril"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevator"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
         }
       ]
     }
