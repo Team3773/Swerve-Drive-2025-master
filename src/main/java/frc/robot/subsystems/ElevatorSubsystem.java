@@ -151,7 +151,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean isAtHeight(double Height){
-        if(getCurrentPosition() >= Height -0.1 || getCurrentPosition() <= Height + 0.1 ){
+        if(getCurrentPosition() >= Height -0.1 && getCurrentPosition() <= Height + 0.1 ){
             return true;
         }
         return false;
