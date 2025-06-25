@@ -18,6 +18,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -149,8 +150,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         leftMotor.set(0);
     }
 
-    public boolean isAtHeight(Double requestedHeight) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isAtHeight'");
+    public boolean isAtHeight(double Height){
+        if(getCurrentPosition() >= Height -0.1 || getCurrentPosition() <= Height + 0.1 ){
+            return true;
+        }
+        return false;
     }
+
 }

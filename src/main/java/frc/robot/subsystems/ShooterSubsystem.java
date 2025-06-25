@@ -24,6 +24,14 @@ public class ShooterSubsystem extends SubsystemBase {
         
         }
 
+        public void setLeftMotorSpeed(double speed) {
+            leftMotor.set(speed);
+        }
+        
+        public void setRightMotorSpeed(double speed) {
+            rightMotor.set(speed);
+        }
+
          public void checkBeamAndControlMotor(boolean rightBumperPressed, boolean rightTriggerPressed, boolean SpeedIncrease) {
          // Read the value from the sensor
         
@@ -72,13 +80,5 @@ public class ShooterSubsystem extends SubsystemBase {
         rightMotor.set(adjustedSpeed);
     }
 
-    public void setLeftMotorSpeed(double d) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLeftMotorSpeed'");
-    }
 
-    public void setRightMotorSpeed(Double rightmotorSpeed) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRightMotorSpeed'");
-    }
 }

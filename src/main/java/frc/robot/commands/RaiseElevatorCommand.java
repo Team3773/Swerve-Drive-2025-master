@@ -10,7 +10,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class RaiseElevatorCommand extends InstantCommand {
-  Double requestedHeight = 21.15;
+  Double requestedHeight = 26.0;
 
   ElevatorSubsystem elevatorSubsystem;
   public RaiseElevatorCommand(ElevatorSubsystem elevatorSubsystem, Double requestedHeight) {

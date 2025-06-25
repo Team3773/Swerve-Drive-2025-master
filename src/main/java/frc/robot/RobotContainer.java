@@ -55,7 +55,7 @@ public class RobotContainer
   private final ArmSubsystem armSubsystem = new ArmSubsystem();
   private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
   private final FollowAprilTagCommand followAprilTagCommand = new FollowAprilTagCommand(drivebase, limelightSubsystem);
-  private final RaiseElevatorCommand raiseElevatorCommand = new RaiseElevatorCommand(elevator, 21.15);
+  private final RaiseElevatorCommand raiseElevatorCommand = new RaiseElevatorCommand(elevator, 26.0);
   private final ShooterAutoCommand shooterAutoCommand = new ShooterAutoCommand(shooterSubsystem);
 
   // Applies deadbands and inverts controls because joysticks
