@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -27,8 +28,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SparkFlex rightMotor;
     private final SparkClosedLoopController leftClosedLoopController;
     // private final SparkClosedLoopController rightClosedLoopController;
-    // private final RelativeEncoder leftEncoder;
-    private final SparkAbsoluteEncoder absoluteEncoder;
+    private final RelativeEncoder absoluteEncoder;
+    // private final SparkAbsoluteEncoder absoluteEncoder;
     // private final RelativeEncoder rightEncoder;
     private DigitalInput resetlimitSwitch;
     // private DigitalInput toplimitSwitch;
@@ -39,10 +40,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public ElevatorSubsystem() {
         leftMotor = new SparkFlex(Constants.ElevatorConstants.LEFT_CAN_ID, MotorType.kBrushless);
         rightMotor = new SparkFlex(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
-        leftClosedLoopController = leftMotor.getClosedLoopController();
+        
         // rightClosedLoopController = rightMotor.getClosedLoopController();
         // leftEncoder = leftMotor.getEncoder();
-        absoluteEncoder = leftMotor.getAbsoluteEncoder();
+        absoluteEncoder = leftMotor.getExternalEncoder();
         
         // rightEncoder = rightMotor.getEncoder();
 
@@ -83,9 +84,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Initialize dashboard values
         SmartDashboard.setDefaultNumber("Elevator Target Position", 0);
         SmartDashboard.setDefaultNumber("Elevator Target Velocity", 0);
-
+        
         //Assume position is below the limit switch on startup
         // leftEncoder.setPosition(0);
+        leftClosedLoopController = leftMotor.getClosedLoopController();
     }
 
     @Override
