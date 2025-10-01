@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -28,8 +29,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SparkFlex rightMotor;
     private final SparkClosedLoopController leftClosedLoopController;
     // private final SparkClosedLoopController rightClosedLoopController;
+    //private final RelativeEncoder leftEncoder;
     private final RelativeEncoder leftEncoder;
-    // private final RelativeEncoder rightEncoder;
     private DigitalInput resetlimitSwitch;
     private DigitalInput toplimitSwitch;
 
@@ -41,8 +42,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         rightMotor = new SparkFlex(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
         leftClosedLoopController = leftMotor.getClosedLoopController();
         // rightClosedLoopController = rightMotor.getClosedLoopController();
-        leftEncoder = leftMotor.getEncoder();
-        // rightEncoder = rightMotor.getEncoder();
+        //leftEncoder = leftMotor.getEncoder();
+        leftEncoder = leftMotor.getExternalEncoder();
 
         SparkFlexConfig globalConfig = new SparkFlexConfig();
         SparkFlexConfig leaderConfig = new SparkFlexConfig();
@@ -56,14 +57,14 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .velocityConversionFactor(1);
 
         leaderConfig.closedLoop
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
                 .p(1.0)
-                .i(1e-4)
-                .d(1)
+                .i(0)
+                .d(1e-4)
                 .outputRange(-1, 1)
-                .p(0.1, ClosedLoopSlot.kSlot1)
+                .p(1.0, ClosedLoopSlot.kSlot1)
                 .i(0, ClosedLoopSlot.kSlot1)
-                .d(0, ClosedLoopSlot.kSlot1)
+                .d(1e-4, ClosedLoopSlot.kSlot1)
                 .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
                 .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
 
@@ -87,9 +88,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        // This method will be called once per scheduler 
         SmartDashboard.putNumber("Elevator setPoint", currentSetPoint);
-        SmartDashboard.putNumber("Elevator Left Encoder Position", leftEncoder.getPosition());
+        SmartDashboard.putNumber("Elevator Right Encoder Position", leftEncoder.getPosition());
         // SmartDashboard.putNumber("Elevator Right Encoder Position",
         // rightEncoder.getPosition());
         SmartDashboard.putNumber("Elevator Left Velocity", leftEncoder.getVelocity());
