@@ -12,8 +12,8 @@ import frc.robot.subsystems.ElevatorSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorCommand extends Command {
   /** Creates a new ElevatorCommand. */
-  Double loadingHeight = -1.779541;
-  Double unStuckHeight = -2.0; //and Lvl 1
+  Double loadingHeight = 18.5;
+  Double unStuckHeight = 20.0; //and Lvl 1
   Double level2Height = 48.5;
   Double level3Height = 84.5;
 

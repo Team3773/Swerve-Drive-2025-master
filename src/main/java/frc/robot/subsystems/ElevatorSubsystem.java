@@ -43,7 +43,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         leftClosedLoopController = leftMotor.getClosedLoopController();
         // rightClosedLoopController = rightMotor.getClosedLoopController();
         //leftEncoder = leftMotor.getEncoder();
-        leftEncoder = leftMotor.getExternalEncoder();
+        leftEncoder = leftMotor.getEncoder();
 
         SparkFlexConfig globalConfig = new SparkFlexConfig();
         SparkFlexConfig leaderConfig = new SparkFlexConfig();
@@ -57,7 +57,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .velocityConversionFactor(1);
 
         leaderConfig.closedLoop
-                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(1.0)
                 .i(0)
                 .d(1e-4)
