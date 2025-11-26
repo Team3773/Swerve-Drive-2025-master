@@ -12,10 +12,13 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,8 +27,9 @@ import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    private SparkFlex leftMotor;
-    private SparkFlex rightMotor;
+    private SparkMax leftMotor;
+    private SparkMax rightMotor;
+    private CANcoder CANcoder;
     private final SparkClosedLoopController leftClosedLoopController;
     // private final SparkClosedLoopController rightClosedLoopController;
     private final RelativeEncoder absoluteEncoder;
@@ -37,19 +41,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double currentSetPoint = 0;
 
     /** Creates a new ElevatorSubsystem. */
-    public ElevatorSubsystem() {
-        leftMotor = new SparkFlex(Constants.ElevatorConstants.LEFT_CAN_ID, MotorType.kBrushless);
-        rightMotor = new SparkFlex(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
+    public ElevatorSubsystem() {  // !!! abosluteEncoder still needs to be initialized
+        leftMotor = new SparkMax(Constants.ElevatorConstants.LEFT_CAN_ID, MotorType.kBrushless);
+        rightMotor = new SparkMax(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
+        CANcoder = new CANcoder(Constants.ElevatorConstants.CANcoder_ID);
         
         // rightClosedLoopController = rightMotor.getClosedLoopController();
         // leftEncoder = leftMotor.getEncoder();
-        absoluteEncoder = leftMotor.getExternalEncoder();
         
         // rightEncoder = rightMotor.getEncoder();
 
-        SparkFlexConfig globalConfig = new SparkFlexConfig();
-        SparkFlexConfig leaderConfig = new SparkFlexConfig();
-        SparkFlexConfig followerConfig = new SparkFlexConfig();
+        SparkMaxConfig globalConfig = new SparkMaxConfig();
+        SparkMaxConfig leaderConfig = new SparkMaxConfig();
+        SparkMaxConfig followerConfig = new SparkMaxConfig();
 
         resetlimitSwitch = new DigitalInput(Constants.ElevatorConstants.RESET_LIMIT_PORT);
         // toplimitSwitch = new DigitalInput(Constants.ElevatorConstants.TOP_LIMIT_PORT);
@@ -60,7 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .zeroOffset(Constants.ElevatorConstants.AbsoluteEncoderOffset);
 
         leaderConfig.closedLoop
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
                 .p(1.0)
                 .i(1e-4)
                 .d(1)
