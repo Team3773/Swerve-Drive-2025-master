@@ -68,7 +68,7 @@ public final class Constants {
         public static final double AbsoluteEncoderOffset = 0;
         public static final int RESET_LIMIT_PORT = 2;
         public static final int TOP_LIMIT_PORT = 3;
-        public static final int CANcoder_ID = 21;
+        public static final int CANcoder_ID = 22;
     }
 
     public static final class ArmConstants {

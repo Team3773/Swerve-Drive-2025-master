@@ -32,7 +32,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private CANcoder CANcoder;
     private final SparkClosedLoopController leftClosedLoopController;
     // private final SparkClosedLoopController rightClosedLoopController;
-    private final RelativeEncoder absoluteEncoder;
+    // private final RelativeEncoder absoluteEncoder;
     // private final SparkAbsoluteEncoder absoluteEncoder;
     // private final RelativeEncoder rightEncoder;
     private DigitalInput resetlimitSwitch;
@@ -41,7 +41,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double currentSetPoint = 0;
 
     /** Creates a new ElevatorSubsystem. */
-    public ElevatorSubsystem() {  // !!! abosluteEncoder still needs to be initialized
+    public ElevatorSubsystem() {  
         leftMotor = new SparkMax(Constants.ElevatorConstants.LEFT_CAN_ID, MotorType.kBrushless);
         rightMotor = new SparkMax(Constants.ElevatorConstants.RIGHT_CAN_ID, MotorType.kBrushless);
         CANcoder = new CANcoder(Constants.ElevatorConstants.CANcoder_ID);
@@ -108,14 +108,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Check the limit switch and reset the encoder if it is pressed
         if (isResetLimitSwitchPressed()) {
             // resetEncoder();
-            if(this.currentSetPoint <= this.getCurrentPosition()){
+            if(this.currentSetPoint <= this.getPostion()){
               this.stop();
           }
         }
-    }
-
-    public double getPostion(){
-        return absoluteEncoder.getPosition();
     }
 
     // Define the method only once
@@ -150,8 +146,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         leftClosedLoopController.setReference(value, ControlType.kPosition, ClosedLoopSlot.kSlot1);
     }
 
-    public double getCurrentPosition() {
-        return absoluteEncoder.getPosition();
+    public double getPostion(){
+        return CANcoder.getAbsolutePosition().getValueAsDouble();
     }
 
     public void stop() {
